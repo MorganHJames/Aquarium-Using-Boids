@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "framework", "Framework\framework\framework.vcxproj", "{473F1220-17D6-4B43-BF91-9F839980F0A3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FBX_Loader", "FBX_Loader\FBX_Loader.vcxproj", "{8385DF8B-DEC1-409A-9432-8F8CA3F4B941}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "aquarium", "aquarium.vcxproj", "{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{473F1220-17D6-4B43-BF91-9F839980F0A3}.Debug|x64.ActiveCfg = Debug|x64
+		{473F1220-17D6-4B43-BF91-9F839980F0A3}.Debug|x64.Build.0 = Debug|x64
+		{473F1220-17D6-4B43-BF91-9F839980F0A3}.Release|x64.ActiveCfg = Release|x64
+		{473F1220-17D6-4B43-BF91-9F839980F0A3}.Release|x64.Build.0 = Release|x64
+		{8385DF8B-DEC1-409A-9432-8F8CA3F4B941}.Debug|x64.ActiveCfg = Debug|x64
+		{8385DF8B-DEC1-409A-9432-8F8CA3F4B941}.Debug|x64.Build.0 = Debug|x64
+		{8385DF8B-DEC1-409A-9432-8F8CA3F4B941}.Release|x64.ActiveCfg = Release|x64
+		{8385DF8B-DEC1-409A-9432-8F8CA3F4B941}.Release|x64.Build.0 = Release|x64
+		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Debug|x64.ActiveCfg = Debug|x64
+		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Debug|x64.Build.0 = Debug|x64
+		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Release|x64.ActiveCfg = Release|x64
+		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2642619C-7A88-4F1E-9E38-6EF4BE42CD84}
+	EndGlobalSection
+EndGlobal
