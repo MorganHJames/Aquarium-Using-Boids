@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\aquarium.cpp" />
+    <ClCompile Include="src\BrainComponent.cpp" />
     <ClCompile Include="src\Components.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Fish.cpp" />
@@ -145,7 +146,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\aquarium.h" />
+    <ClInclude Include="include\BrainComponent.h" />
     <ClInclude Include="include\Component.h" />
+    <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\Fish.h" />
     <ClInclude Include="include\FishModelComponent.h" />

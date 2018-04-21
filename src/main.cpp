@@ -1,13 +1,12 @@
 #include "aquarium.h"
+#include "Constants.h"
 
-#define DEFAULT_SCREENWIDTH 1024
-#define DEFAULT_SCREENHEIGHT 720
 // main that controls the creation/destruction of an application
 int main(int argc, char* argv[])
 {
 	// explicitly control the creation of our application
 	aquarium* app = new aquarium();
-	app->run("Aquarium", DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, false);
+	app->run("Aquarium", g_uDEFAULT_SCREENWIDTH, g_uDEFAULT_SCREENHEIGHT, false);
 
 	// explicitly control the destruction of our application
 	delete app;

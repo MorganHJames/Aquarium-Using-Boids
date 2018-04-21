@@ -1,16 +1,16 @@
 #include "Fish.h"
 #include "FishModelComponent.h"
 #include "TransformComponent.h"
+#include "BrainComponent.h"
 
 typedef Entity PARENT;
 
 
 Fish::Fish()
 {
-	FishModelComponent* modelComp = new FishModelComponent(this);
-	TransformComponent* transComp = new TransformComponent(this);
-	AddComponent(modelComp);
-	AddComponent(transComp);
+	AddComponent(new FishModelComponent(this));
+	AddComponent(new TransformComponent(this));
+	AddComponent(new BrainComponent(this));
 }
 
 Fish::~Fish()
