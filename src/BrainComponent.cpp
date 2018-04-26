@@ -9,10 +9,11 @@ typedef Component PARENT;
 
 //Constants
 static const float fMAX_SPEED = 5.5f;
-static const float fJITTER = 0.95f;
-static const float fWANDER_RADIUS = 5.0f;
-static const float fSPHERE_FORWARD_MULTIPLIER = 100.0f;
+static const float fJITTER = 0.9f;
+static const float fWANDER_RADIUS = 2.0f;
+static const float fSPHERE_FORWARD_MULTIPLIER = 10.0f;
 static const float fCONTAINMENT_TIMER_MAX = 5.0f;
+static const float fNEIGHBOURHOOD_RADIUS = 15.0f;
 
 BrainComponent::BrainComponent(Entity* pOwnerEntity)
 	: PARENT(pOwnerEntity),
@@ -40,8 +41,21 @@ void BrainComponent::Update(float a_fDeltaTime)
 
 	//Get forward and pos
 	glm::vec3 v3Forward = pTransformComp->GetFacingDirection();
+	glm::vec3 v3Up = pTransformComp->GetUpDirection();
+
+
+	//gram schmist orthonomalisation process
+	v3Up = v3Up - (v3Forward * glm::dot(v3Forward, v3Up));
+	v3Up = glm::normalize(v3Up);
+	glm::vec3 v3Right = glm::cross(v3Up, v3Forward);
+	v3Right = glm::normalize(v3Right);
+	pTransformComp->SetUpDirection(v3Up);
+	pTransformComp->SetRightDirection(v3Right);
+
 	glm::vec3 v3CurrentPos = pTransformComp->GetCurrentPosition();
 
+
+	//Behavior Force Calculation
 	glm::vec3 v3TotalForce(0.0f, 0.0f, 0.0f);
 
 	glm::vec3 v3ContainmentForce = CalculateContainmentForce(v3CurrentPos);
@@ -49,15 +63,27 @@ void BrainComponent::Update(float a_fDeltaTime)
 	if (glm::length(v3ContainmentForce) <= 0.0f && m_fContainmentTimer <= 0.0f)
 	{
 		glm::vec3 v3WanderForce = CalculateWanderForce(v3CurrentPos, v3Forward);
-		v3TotalForce = v3WanderForce;
+		glm::vec3 v3SeperationForce = CalculateSeperationForce();
+		glm::vec3 v3AlignmentForce = CalculateAlignmentForce();
+		glm::vec3 v3CohesionForce = CalculateCohesionForce();
+
+		v3TotalForce = 
+			(v3WanderForce * 0.3f)
+			+ (v3SeperationForce * 1.0f)
+			+ (v3AlignmentForce * 0.8f)
+			+ (v3CohesionForce * 0.5f);
 	}
 	else
 	{
 		m_fContainmentTimer -= a_fDeltaTime;
 		v3TotalForce = v3ContainmentForce;
 	}
-
+	///////////////////////////////////////////////////
+	
 	m_v3CurrentVelocity += v3TotalForce;
+
+	//Clamp velocity.
+	m_v3CurrentVelocity = glm::clamp(m_v3CurrentVelocity, glm::vec3(-10.0f, -10.0f,-10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
 
 	//Apply the velocity to position
 	v3CurrentPos += m_v3CurrentVelocity * a_fDeltaTime;
@@ -99,7 +125,7 @@ glm::vec3 BrainComponent::CalculateSeekForce(const glm::vec3& v3Target, const gl
 	return v3Force;
 }
 
-glm::vec3 BrainComponent::CalculateEvadeForce(const glm::vec3& v3Target, const glm::vec3& v3CurrentPos) const
+glm::vec3 BrainComponent::CalculateFleeForce(const glm::vec3& v3Target, const glm::vec3& v3CurrentPos) const
 {
 	//Apply force
 	glm::vec3 v3TargetDir = glm::normalize(v3CurrentPos - v3Target);
@@ -161,3 +187,137 @@ glm::vec3 BrainComponent::CalculateContainmentForce(const glm::vec3& v3CurrentPo
 }
 
 
+glm::vec3 BrainComponent::CalculateSeperationForce()
+{
+	glm::vec3 v3SeparationForce(0.0f, 0.0f, 0.0f);	
+
+	if (GetOwnerEntity())
+	{
+		TransformComponent* pLocalTransform = static_cast<TransformComponent*>(GetOwnerEntity()->FindComponentOfType(TRANSFORM));
+		if (pLocalTransform)
+		{
+			glm::vec3 v3LocalPos = pLocalTransform->GetCurrentPosition();
+
+			const std::map<const unsigned int, Entity*>& xEntityMap = Entity::GetEntityList();
+			std::map<const unsigned int, Entity*>::const_iterator xIter;
+
+			for (xIter = xEntityMap.begin(); xIter != xEntityMap.end(); ++xIter)
+			{
+				Entity* pTarget = xIter->second;
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID())
+				{
+					TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
+					if (pTargetTransform)
+					{
+						glm::vec3 v3TargetPos = pTargetTransform->GetCurrentPosition();
+						float fDistanceBetween = glm::length(v3LocalPos - v3TargetPos);
+						if (fDistanceBetween < fNEIGHBOURHOOD_RADIUS)
+						{
+							v3SeparationForce += CalculateFleeForce(v3TargetPos, v3LocalPos);
+							if (glm::length(v3SeparationForce) > 0.0f)
+							{
+								v3SeparationForce = glm::normalize(v3SeparationForce);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return v3SeparationForce;
+}
+
+glm::vec3 BrainComponent::CalculateAlignmentForce()
+{
+	glm::vec3 v3AverageVelocity(0.0f, 0.0f, 0.0f);
+	glm::vec3 v3AlignmentForce(0.0f, 0.0f, 0.0f);
+	unsigned int  uNeighbourCount = 0;
+
+	if (GetOwnerEntity())
+	{
+		TransformComponent* pLocalTransform = static_cast<TransformComponent*>(GetOwnerEntity()->FindComponentOfType(TRANSFORM));
+		if (pLocalTransform)
+		{
+			glm::vec3 v3LocalPos = pLocalTransform->GetCurrentPosition();
+
+			const std::map<const unsigned int, Entity*>& xEntityMap = Entity::GetEntityList();
+			std::map<const unsigned int, Entity*>::const_iterator xIter;
+
+			for (xIter = xEntityMap.begin(); xIter != xEntityMap.end(); ++xIter)
+			{
+				Entity* pTarget = xIter->second;
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID())
+				{
+					TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
+					BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTarget->FindComponentOfType(BRAIN));
+
+					if (pTargetTransform && pTargetBrain)
+					{
+						glm::vec3 v3TargetPos = pTargetTransform->GetCurrentPosition();
+						float fDistanceBetween = glm::length(v3LocalPos - v3TargetPos);
+						if (fDistanceBetween < fNEIGHBOURHOOD_RADIUS)
+						{
+							v3AverageVelocity += pTargetBrain->GetCurrentVelocity();
+							uNeighbourCount++;
+						}
+					}
+				}
+			}
+
+			if (glm::length(v3AverageVelocity) > 0.0f)
+			{
+				v3AverageVelocity /= uNeighbourCount;
+				v3AlignmentForce = glm::normalize(v3AverageVelocity - m_v3CurrentVelocity);
+			}
+
+		}
+	}
+	return v3AlignmentForce;
+}
+
+glm::vec3 BrainComponent::CalculateCohesionForce()
+{
+	glm::vec3 v3AveragePosition(0.0f, 0.0f, 0.0f);
+	glm::vec3 v3CohesionForce(0.0f, 0.0f, 0.0f);
+	unsigned int  uNeighbourCount = 0;
+
+	if (GetOwnerEntity())
+	{
+		TransformComponent* pLocalTransform = static_cast<TransformComponent*>(GetOwnerEntity()->FindComponentOfType(TRANSFORM));
+		if (pLocalTransform)
+		{
+			glm::vec3 v3LocalPos = pLocalTransform->GetCurrentPosition();
+
+			const std::map<const unsigned int, Entity*>& xEntityMap = Entity::GetEntityList();
+			std::map<const unsigned int, Entity*>::const_iterator xIter;
+
+			for (xIter = xEntityMap.begin(); xIter != xEntityMap.end(); ++xIter)
+			{
+				Entity* pTarget = xIter->second;
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID())
+				{
+					TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
+					
+					if (pTargetTransform)
+					{
+						glm::vec3 v3TargetPos = pTargetTransform->GetCurrentPosition();
+						float fDistanceBetween = glm::length(v3LocalPos - v3TargetPos);
+						if (fDistanceBetween < fNEIGHBOURHOOD_RADIUS)
+						{
+							v3AveragePosition += v3TargetPos;
+							uNeighbourCount++;
+						}
+					}
+				}
+			}
+
+			if (glm::length(v3AveragePosition) > 0.0f)
+			{
+				v3AveragePosition /= uNeighbourCount;
+				v3CohesionForce = glm::normalize(v3AveragePosition - v3LocalPos);
+			}
+
+		}
+	}
+	return v3CohesionForce;
+}

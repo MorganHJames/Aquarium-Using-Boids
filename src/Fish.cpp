@@ -6,10 +6,10 @@
 typedef Entity PARENT;
 
 
-Fish::Fish()
+Fish::Fish(glm::vec3 pos)
 {
 	AddComponent(new FishModelComponent(this));
-	AddComponent(new TransformComponent(this));
+	AddComponent(new TransformComponent(this, pos));
 	AddComponent(new BrainComponent(this));
 }
 

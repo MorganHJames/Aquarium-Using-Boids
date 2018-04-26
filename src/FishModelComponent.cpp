@@ -36,8 +36,6 @@ void FishModelComponent::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, un
 	TransformComponent* pTransformComp = static_cast<TransformComponent*>(pEntity->FindComponentOfType(TRANSFORM));
 	if (!pTransformComp) return;
 
-
-
 	Gizmos::addBox(pTransformComp->GetCurrentPosition(), glm::vec3(1.f, 1.f, 1.f), true, glm::vec4(1.f, 0.0f, 0.f, 1.f), pTransformComp->GetEntityMatrix());
 }
 

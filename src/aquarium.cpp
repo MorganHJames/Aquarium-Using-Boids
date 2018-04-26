@@ -33,8 +33,14 @@ bool aquarium::onCreate()
 	// initialise the Gizmos helper class
 	Gizmos::create();
 
-	Fish* myFish = new Fish();
-	m_axFishArray.push_back(myFish);
+	Fish* fish1 = new Fish(glm::vec3 (0,0,0));
+	m_axFishArray.push_back(fish1);
+	Fish* fish2 = new Fish(glm::vec3(0, 0, 1));
+	m_axFishArray.push_back(fish2);
+	Fish* fish3 = new Fish(glm::vec3(0, 0, 2));
+	m_axFishArray.push_back(fish3);
+	Fish* fish4 = new Fish(glm::vec3(0, 0, 3));
+	m_axFishArray.push_back(fish4);
 
 	// create a world-space matrix for a camera
 	m_cameraMatrix = glm::inverse(glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));

@@ -21,17 +21,17 @@ private:
 	glm::mat4 m_m4EntityMatrix;
 
 public:
-	TransformComponent(Entity* pOwner);
+	TransformComponent(Entity* pOwner, glm::vec3 pos);
 	~TransformComponent();
 
 	virtual void Update(float a_fDeltaTime) {};
 
 	virtual void Draw(unsigned int a_ProgramID, unsigned int a_uVBO, unsigned int a_uIBO) {};
 
-	glm::vec3 GetRightDirection() { return GetEntityMatrixRow(RIGHT_VECTOR); }
-	glm::vec3 GetUpDirection() { return GetEntityMatrixRow(UP_VECTOR); }
-	glm::vec3 GetFacingDirection() { return GetEntityMatrixRow(FORWARD_VECTOR); }
-	glm::vec3 GetCurrentPosition() { return GetEntityMatrixRow(POSITION_VECTOR); }
+	const glm::vec3 GetRightDirection() { return GetEntityMatrixRow(RIGHT_VECTOR); }
+	const glm::vec3 GetUpDirection() { return GetEntityMatrixRow(UP_VECTOR); }
+	const glm::vec3 GetFacingDirection() { return GetEntityMatrixRow(FORWARD_VECTOR); }
+	const glm::vec3 GetCurrentPosition() { return GetEntityMatrixRow(POSITION_VECTOR); }
 
 	void SetRightDirection(glm::vec3 vRightDirection) { SetEntityMatrixRow(RIGHT_VECTOR, vRightDirection); }
 	void SetUpDirection(glm::vec3 vUpDirection) { SetEntityMatrixRow(UP_VECTOR, vUpDirection); }

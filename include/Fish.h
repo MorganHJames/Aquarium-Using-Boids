@@ -3,11 +3,12 @@
 
 // Includes
 #include "Entity.h"
+#include "glm\glm.hpp"
 
 class Fish : public Entity
 {
 public:
-	Fish();
+	Fish(glm::vec3 pos);
 	~Fish();
 
 	virtual void Update(float a_fDeltaTime);

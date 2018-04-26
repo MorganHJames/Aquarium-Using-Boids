@@ -9,9 +9,7 @@
 class Entity
 {
 private:
-	unsigned int m_uEntityID;
-	
-
+	const unsigned int m_uEntityID;
 	static unsigned int s_uEntityIDCount;
 	static std::map<const unsigned int, Entity*> s_xEntityList;
 
@@ -29,8 +27,9 @@ public:
 	void AddComponent(Component* a_pComponent) { m_apComponentList.push_back(a_pComponent); }
 	Component* FindComponentOfType(COMPONENT_TYPE eComponentType);
 
-	inline static unsigned int GetEntityID() { return s_uEntityIDCount; }
-
+	inline const unsigned int GetEntityID() { return m_uEntityID; }
+	inline static const std::map<const unsigned int, Entity*> GetEntityList() { return s_xEntityList; }
+	
 };
 
 #endif // _ENTITY_H

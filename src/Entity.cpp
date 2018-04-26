@@ -1,8 +1,13 @@
 #include "Entity.h"
 
-Entity::Entity()
-{
+unsigned int Entity::s_uEntityIDCount;
+std::map<const unsigned int, Entity*> Entity::s_xEntityList;
 
+Entity::Entity()
+	:m_uEntityID(s_uEntityIDCount)
+{
+	s_uEntityIDCount++;
+	s_xEntityList.insert(std::pair<const unsigned int, Entity*>(m_uEntityID, this));
 }
 
 Entity::~Entity()
