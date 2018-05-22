@@ -8,6 +8,8 @@
 
 // Forward Declarations
 class Fish;
+class Shark;
+class Obstacle;
 
 // Derived application class that wraps up all globals neatly
 class aquarium : public Application
@@ -40,6 +42,8 @@ private:
 	glm::mat4 m_projectionMatrix;
 
 	std::vector< Fish* > m_axFishArray;
+	std::vector< Shark* > m_axSharkArray;
+	std::vector< Obstacle* > m_axObstacleArray;
 
 	glm::vec4 m_lightPos;
 };

@@ -1,14 +1,13 @@
 #include "Fish.h"
-#include "FishModelComponent.h"
+#include "ModelComponent.h"
 #include "TransformComponent.h"
 #include "BrainComponent.h"
 
 typedef Entity PARENT;
 
-
-Fish::Fish(glm::vec3 pos)
+Fish::Fish(glm::vec3 pos, float a_size, glm::vec4 a_colour)
 {
-	AddComponent(new FishModelComponent(this));
+	AddComponent(new ModelComponent(this, a_size, 0, 0, a_colour));
 	AddComponent(new TransformComponent(this, pos));
 	AddComponent(new BrainComponent(this));
 }

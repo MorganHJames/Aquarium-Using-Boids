@@ -30,9 +30,24 @@ public:
 private:
 	//Steering behaviors.
 	glm::vec3 CalculateSeekForce(const glm::vec3& v3Target, const glm::vec3& v3CurrentPos) const;
+	glm::vec3 CalculatePursuitForce(Entity* a_target, const glm::vec3& v3CurrentPos) const;
+
 	glm::vec3 CalculateFleeForce(const glm::vec3& v3Target, const glm::vec3& v3CurrentPos) const;
+	glm::vec3 CalculateEvadeForce(Entity* a_target, const glm::vec3& v3CurrentPos) const;
+
 	glm::vec3 CalculateWanderForce(const glm::vec3& v3CurrentPos, const glm::vec3& v3Forward);
+
+	glm::vec3 CalculateInstinctForce(glm::vec3& v3CurrentPos);
+
 	glm::vec3 CalculateContainmentForce(const glm::vec3& v3CurrentPos);
+
+	//Collision Avoidance
+	glm::vec3 CalculateCollisionAvoidanceForce();
+
+	//Helper Functions.
+	float Distance(glm::vec3 a_A, glm::vec3 a_B);
+	bool LineIntersectsSphere(glm::vec3 a_ahead, glm::vec3 a_ahead2, Entity* a_Obstacle);
+	Entity* FindMostThreateningObstacle(glm::vec3 a_ahead, glm::vec3 a_ahead2);
 
 	//Flocking behaviors.
 	glm::vec3 CalculateSeperationForce();

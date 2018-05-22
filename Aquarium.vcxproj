@@ -140,8 +140,10 @@
     <ClCompile Include="src\Components.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Fish.cpp" />
-    <ClCompile Include="src\FishModelComponent.cpp" />
+    <ClCompile Include="src\ModelComponent.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Obstacle.cpp" />
+    <ClCompile Include="src\Shark.cpp" />
     <ClCompile Include="src\TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,7 +153,9 @@
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\Fish.h" />
-    <ClInclude Include="include\FishModelComponent.h" />
+    <ClInclude Include="include\ModelComponent.h" />
+    <ClInclude Include="include\Obstacle.h" />
+    <ClInclude Include="include\Shark.h" />
     <ClInclude Include="include\TransformComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
