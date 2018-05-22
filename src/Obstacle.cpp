@@ -4,10 +4,9 @@
 
 typedef Entity PARENT;
 
-
 Obstacle::Obstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour)
 {
-	AddComponent(new ModelComponent(this, 0, a_radius, 0, a_colour));
+	AddComponent(new ModelComponent(this, OBSTACLE, a_colour, a_radius));
 	AddComponent(new TransformComponent(this, a_pos));
 }
 

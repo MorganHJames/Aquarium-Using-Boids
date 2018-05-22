@@ -5,11 +5,11 @@
 
 typedef Entity PARENT;
 
-Shark::Shark(glm::vec3 pos, float a_radius, float a_length, glm::vec4 a_colour)
+Shark::Shark(glm::vec3 pos, float a_fLeaderness, glm::vec4 a_colour)
 {
-	AddComponent(new ModelComponent(this, 0, a_radius, a_length, a_colour));
+	AddComponent(new ModelComponent(this, SHARK, a_colour, 0.0f));
 	AddComponent(new TransformComponent(this, pos));
-	AddComponent(new BrainComponent(this));
+	AddComponent(new BrainComponent(this, a_fLeaderness));
 }
 
 Shark::~Shark()

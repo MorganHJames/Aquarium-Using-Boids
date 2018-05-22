@@ -39,19 +39,19 @@ bool aquarium::onCreate()
 	m_axFishArray.push_back(fish1);
 	Fish* fish2 = new Fish(glm::vec3(0, 0, 2), 1, glm::vec4(1, 1, 0, 1));
 	m_axFishArray.push_back(fish2);
-	Fish* fish3 = new Fish(glm::vec3(0, 0, 4), 1, glm::vec4(1, 1, 0, 1));
+	Fish* fish3 = new Fish(glm::vec3(0, 0, 4), 7, glm::vec4(1, 1, 0, 1));
 	m_axFishArray.push_back(fish3);
 	Fish* fish4 = new Fish(glm::vec3(0, 0, 6), 1, glm::vec4(1, 1, 0, 1));
 	m_axFishArray.push_back(fish4);
 
 	//create Sharks.
-	Shark* shark1 = new Shark(glm::vec3(0, 2, 0), 2, 2, glm::vec4(0,1,0,1));
+	Shark* shark1 = new Shark(glm::vec3(0, 2, 0), 7, glm::vec4(0,1,0,1));
 	m_axSharkArray.push_back(shark1);
-	Shark* shark2 = new Shark(glm::vec3(0, 4, 1), 2, 2, glm::vec4(0,1,0,1));
+	Shark* shark2 = new Shark(glm::vec3(0, 4, 1), 2, glm::vec4(0,1,0,1));
 	m_axSharkArray.push_back(shark2);
-	Shark* shark3 = new Shark(glm::vec3(0, 6, 2), 2, 2, glm::vec4(0, 1, 0, 1));
+	Shark* shark3 = new Shark(glm::vec3(0, 6, 2), 2, glm::vec4(0, 1, 0, 1));
 	m_axSharkArray.push_back(shark3);
-	Shark* shark4 = new Shark(glm::vec3(0, 8, 3), 2, 2, glm::vec4(0, 1, 0, 1));
+	Shark* shark4 = new Shark(glm::vec3(0, 8, 3), 2, glm::vec4(0, 1, 0, 1));
 	m_axSharkArray.push_back(shark4);
 
 	//Create Obstacles.

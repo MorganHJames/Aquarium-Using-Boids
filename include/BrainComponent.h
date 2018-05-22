@@ -16,7 +16,7 @@ enum BEHAVIOUR_TYPE
 class BrainComponent : public Component
 {
 public:
-	BrainComponent(Entity* pOwnerEntity);
+	BrainComponent(Entity* pOwnerEntity, int a_iLeaderness);
 	~BrainComponent();
 
 	virtual void Update(float a_fDeltaTime);
@@ -26,6 +26,25 @@ public:
 	{
 		return m_v3CurrentVelocity;
 	}
+
+	float m_fMAX_SPEED = 5.5f;
+	float m_fJITTER = 0.9f;
+	float m_fWANDER_RADIUS = 2.0f;
+	float m_fSPHERE_FORWARD_MULTIPLIER = 10.0f;
+	float m_fNEIGHBOURHOOD_RADIUS = 40.0f;
+	float m_fMAX_SEE_AHEAD = 15.0f;
+	float m_fWall_CHECK_DISTANCE = 1.0f;
+	float m_fINSTINCT_RANGE = 50.0f;
+	int m_iLEADERNESS = 1;
+
+	//Total Force:
+	float m_fWanderForce = 0.3f;
+	float m_fInstinctiveForce = 0.3f;
+	float m_fSeperationForce = 2.0f;
+	float m_fAlignmentForce = 0.8f;
+	float m_fCohesionForce = 1.5f;
+	float m_fCollisionAvoidanceForce = 10.0f;
+	float m_fContainmentForce = 100.0f;
 
 private:
 	//Steering behaviors.
@@ -56,9 +75,6 @@ private:
 
 	glm::vec3 m_v3CurrentVelocity;
 	BEHAVIOUR_TYPE m_eCurrentBehaviour;
-
-	float m_fContainmentTimer;
-
 };
 
 #endif//_BRAIN_COMPONENT_H

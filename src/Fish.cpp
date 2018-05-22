@@ -5,11 +5,11 @@
 
 typedef Entity PARENT;
 
-Fish::Fish(glm::vec3 pos, float a_size, glm::vec4 a_colour)
+Fish::Fish(glm::vec3 pos, float a_fLeaderness, glm::vec4 a_colour)
 {
-	AddComponent(new ModelComponent(this, a_size, 0, 0, a_colour));
+	AddComponent(new ModelComponent(this, FISH, a_colour, 0.0f));
 	AddComponent(new TransformComponent(this, pos));
-	AddComponent(new BrainComponent(this));
+	AddComponent(new BrainComponent(this, a_fLeaderness));
 }
 
 Fish::~Fish()

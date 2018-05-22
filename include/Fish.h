@@ -8,7 +8,7 @@
 class Fish : public Entity
 {
 public:
-	Fish(glm::vec3 pos, float a_size, glm::vec4 a_colour);
+	Fish(glm::vec3 pos, float a_fLeaderness, glm::vec4 a_colour);
 	~Fish();
 
 	virtual void Update(float a_fDeltaTime);

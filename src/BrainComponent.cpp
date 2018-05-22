@@ -7,22 +7,12 @@
 
 typedef Component PARENT;
 
-//Constants
-static const float fMAX_SPEED = 5.5f;
-static const float fJITTER = 0.9f;
-static const float fWANDER_RADIUS = 2.0f;
-static const float fSPHERE_FORWARD_MULTIPLIER = 10.0f;
-static const float fNEIGHBOURHOOD_RADIUS = 40.0f;
-static const float fMAX_SEE_AHEAD = 15.0f;
-static const float fWall_CHECK_DISTANCE = 1.0f;
-static const float fINSTINCT_RANGE = 50.0f;
-
-BrainComponent::BrainComponent(Entity* pOwnerEntity)
+BrainComponent::BrainComponent(Entity* pOwnerEntity, int a_iLeaderness)
 	: PARENT(pOwnerEntity),
 	m_v3CurrentVelocity(0.f,0.f,0.f),
-	m_eCurrentBehaviour(WANDER),
-	m_fContainmentTimer(0.0f)
+	m_eCurrentBehaviour(WANDER)
 {
+	m_iLEADERNESS = a_iLeaderness;
 	m_eComponentType = BRAIN;
 }
 
@@ -69,13 +59,13 @@ void BrainComponent::Update(float a_fDeltaTime)
 	glm::vec3 v3CollisionAvoidanceForce = CalculateCollisionAvoidanceForce();
 
 	v3TotalForce = 
-		(v3WanderForce * 0.3f)
-		+ (v3InstinctiveForce * 0.3f)
-		+ (v3SeperationForce * 2.0f)
-		+ (v3AlignmentForce * 0.8f)
-		+ (v3CohesionForce * 1.5f)
-		+ (v3CollisionAvoidanceForce * 10.0f)
-		+ (v3ContainmentForce * 10.0f);
+		(v3WanderForce * m_fWanderForce)
+		+ (v3InstinctiveForce * m_fInstinctiveForce)
+		+ (v3SeperationForce * m_fSeperationForce)
+		+ (v3AlignmentForce * m_fAlignmentForce)
+		+ (v3CohesionForce * m_fCohesionForce)
+		+ (v3CollisionAvoidanceForce * m_fCollisionAvoidanceForce)
+		+ (v3ContainmentForce * m_fContainmentForce);
 
 	///////////////////////////////////////////////////
 	
@@ -113,7 +103,7 @@ glm::vec3 BrainComponent::CalculateSeekForce(const glm::vec3& v3Target, const gl
 {
 	//Apply force
 	glm::vec3 v3TargetDir = glm::normalize(v3Target - v3CurrentPos);
-	glm::vec3 v3NewVelocity = v3TargetDir * fMAX_SPEED;
+	glm::vec3 v3NewVelocity = v3TargetDir * m_fMAX_SPEED;
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
 	//Add gizmos
@@ -128,7 +118,7 @@ glm::vec3 BrainComponent::CalculatePursuitForce(Entity* a_target, const glm::vec
 	TransformComponent* aTransform = static_cast<TransformComponent*>(a_target->FindComponentOfType(TRANSFORM));
 	BrainComponent* aBrain = static_cast<BrainComponent*>(a_target->FindComponentOfType(BRAIN));
 	glm::vec3 distance = aTransform->GetCurrentPosition() - v3CurrentPos;
-	float updatesAhead = distance.length() / fMAX_SPEED;
+	float updatesAhead = distance.length() / m_fMAX_SPEED;
 	glm::vec3 futurePosition = aTransform->GetCurrentPosition() + aBrain->GetCurrentVelocity() * updatesAhead;
 	return CalculateSeekForce(futurePosition, v3CurrentPos);
 }
@@ -137,7 +127,7 @@ glm::vec3 BrainComponent::CalculateFleeForce(const glm::vec3& v3Target, const gl
 {
 	//Apply force
 	glm::vec3 v3TargetDir = glm::normalize(v3CurrentPos - v3Target);
-	glm::vec3 v3NewVelocity = v3TargetDir * fMAX_SPEED;
+	glm::vec3 v3NewVelocity = v3TargetDir * m_fMAX_SPEED;
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
 	//Add gizmos
@@ -152,30 +142,30 @@ glm::vec3 BrainComponent::CalculateEvadeForce(Entity* a_target, const glm::vec3&
 	TransformComponent* aTransform = static_cast<TransformComponent*>(a_target->FindComponentOfType(TRANSFORM));
 	BrainComponent* aBrain = static_cast<BrainComponent*>(a_target->FindComponentOfType(BRAIN));
 	glm::vec3 distance = aTransform->GetCurrentPosition() - v3CurrentPos;
-	float updatesAhead = distance.length() / fMAX_SPEED;
+	float updatesAhead = distance.length() / m_fMAX_SPEED;
 	glm::vec3 futurePosition = aTransform->GetCurrentPosition() + aBrain->GetCurrentVelocity() * updatesAhead; 
 	return CalculateFleeForce(futurePosition, v3CurrentPos);
 }
 
 glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& v3CurrentPos, const glm::vec3& v3Forward)
 {
-	glm::vec3 v3WanderSphereOrigin = v3CurrentPos + (v3Forward * fSPHERE_FORWARD_MULTIPLIER);
-	glm::vec3 v3RandPoint = glm::sphericalRand(fWANDER_RADIUS);
+	glm::vec3 v3WanderSphereOrigin = v3CurrentPos + (v3Forward * m_fSPHERE_FORWARD_MULTIPLIER);
+	glm::vec3 v3RandPoint = glm::sphericalRand(m_fWANDER_RADIUS);
 	glm::vec3 v3RandPointInSphere = v3WanderSphereOrigin + v3RandPoint;
 
 	//Use sphere rand to gen a random vector with magnitute of jitter.
-	v3RandPoint = glm::sphericalRand(fJITTER);
+	v3RandPoint = glm::sphericalRand(m_fJITTER);
 
 	//Find a random in the sphere
 	glm::vec3 v3RandTargetVec = v3RandPointInSphere + v3RandPoint;
 
 	//Set the target.
-	glm::vec3 v3Target = v3WanderSphereOrigin + (glm::normalize(v3RandTargetVec - v3WanderSphereOrigin) * fWANDER_RADIUS);
+	glm::vec3 v3Target = v3WanderSphereOrigin + (glm::normalize(v3RandTargetVec - v3WanderSphereOrigin) * m_fWANDER_RADIUS);
 
 	
 	//Apply force eqquation
 	glm::vec3 v3TargetDir = glm::normalize(v3Target - v3CurrentPos);
-	glm::vec3 v3NewVelocity = v3TargetDir * fMAX_SPEED;
+	glm::vec3 v3NewVelocity = v3TargetDir * m_fMAX_SPEED;
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
 	//Gizmos
@@ -183,7 +173,7 @@ glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& v3CurrentPos, co
 	Gizmos::addLine(v3WanderSphereOrigin, v3RandPointInSphere, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	Gizmos::addLine(v3RandPointInSphere, v3RandTargetVec, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 	Gizmos::addLine(v3WanderSphereOrigin, v3Target, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	Gizmos::addCircle(v3WanderSphereOrigin, fWANDER_RADIUS, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+	Gizmos::addCircle(v3WanderSphereOrigin, m_fWANDER_RADIUS, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
 
 	return v3Force;
 }
@@ -236,7 +226,7 @@ glm::vec3 BrainComponent::CalculateInstinctForce(glm::vec3& v3CurrentPos)
 			if (pClosestTargetTransform)
 			{
 				float fDistanceBetweenClosest = glm::length(v3CurrentPos - pClosestTargetTransform->GetCurrentPosition());
-				if (fDistanceBetweenClosest < fINSTINCT_RANGE)
+				if (fDistanceBetweenClosest < m_fINSTINCT_RANGE)
 				{
 					if (static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model == FISH)
 					{
@@ -265,37 +255,37 @@ glm::vec3 BrainComponent::CalculateContainmentForce(const glm::vec3& v3CurrentPo
 	glm::vec3 v3ContainmentForce(0.0f, 0.0f, 0.0f);
 
 	//right wall
-	if (glm::distance(v3CurrentPos, glm::vec3(g_fHALF_AQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z)) < fWall_CHECK_DISTANCE)
+	if (glm::distance(v3CurrentPos, glm::vec3(g_fHALF_AQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
 	{
 		v3ContainmentForce += CalculateFleeForce(glm::vec3(g_fHALF_AQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z), v3CurrentPos);
 	}
 
 	//left wall
-	if (glm::distance(v3CurrentPos, glm::vec3(-g_fAQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z)) < fWall_CHECK_DISTANCE)
+	if (glm::distance(v3CurrentPos, glm::vec3(-g_fAQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
 	{
 		v3ContainmentForce += CalculateFleeForce(glm::vec3(-g_fAQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z), v3CurrentPos);
 	}
 
 	//top wall
-	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, g_fAQUARIUM_SIZE, v3CurrentPos.z)) < fWall_CHECK_DISTANCE)
+	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, g_fAQUARIUM_SIZE, v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
 	{
 		v3ContainmentForce += CalculateFleeForce(glm::vec3(v3CurrentPos.x, g_fAQUARIUM_SIZE, v3CurrentPos.z), v3CurrentPos);
 	}
 
 	//bottom wall
-	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, -g_fAQUARIUM_SIZE, v3CurrentPos.z)) < fWall_CHECK_DISTANCE)
+	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, -g_fAQUARIUM_SIZE, v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
 	{
 		v3ContainmentForce += CalculateFleeForce(glm::vec3(v3CurrentPos.x, -g_fAQUARIUM_SIZE, v3CurrentPos.z), v3CurrentPos);
 	}
 
 	//front wall
-	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, v3CurrentPos.y, g_fAQUARIUM_SIZE)) < fWall_CHECK_DISTANCE)
+	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, v3CurrentPos.y, g_fAQUARIUM_SIZE)) < m_fWall_CHECK_DISTANCE)
 	{
 		v3ContainmentForce += CalculateFleeForce(glm::vec3(v3CurrentPos.x, v3CurrentPos.y, g_fAQUARIUM_SIZE), v3CurrentPos);
 	}
 
 	//back wall
-	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, v3CurrentPos.y, -g_fAQUARIUM_SIZE)) < fWall_CHECK_DISTANCE)
+	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, v3CurrentPos.y, -g_fAQUARIUM_SIZE)) < m_fWall_CHECK_DISTANCE)
 	{
 		v3ContainmentForce += CalculateFleeForce(glm::vec3(v3CurrentPos.x, v3CurrentPos.y, -g_fAQUARIUM_SIZE), v3CurrentPos);
 	}
@@ -327,7 +317,7 @@ glm::vec3 BrainComponent::CalculateSeperationForce()
 					{
 						glm::vec3 v3TargetPos = pTargetTransform->GetCurrentPosition();
 						float fDistanceBetween = glm::length(v3LocalPos - v3TargetPos);
-						if (fDistanceBetween < fNEIGHBOURHOOD_RADIUS)
+						if (fDistanceBetween < m_fNEIGHBOURHOOD_RADIUS)
 						{
 							v3SeparationForce += CalculateFleeForce(v3TargetPos, v3LocalPos);
 							if (glm::length(v3SeparationForce) > 0.0f)
@@ -371,10 +361,13 @@ glm::vec3 BrainComponent::CalculateAlignmentForce()
 					{
 						glm::vec3 v3TargetPos = pTargetTransform->GetCurrentPosition();
 						float fDistanceBetween = glm::length(v3LocalPos - v3TargetPos);
-						if (fDistanceBetween < fNEIGHBOURHOOD_RADIUS)
+						if (fDistanceBetween < m_fNEIGHBOURHOOD_RADIUS)
 						{
-							v3AverageVelocity += pTargetBrain->GetCurrentVelocity();
-							uNeighbourCount++;
+							for (int i = 0; i < pTargetBrain->m_iLEADERNESS; ++i)
+							{
+								v3AverageVelocity += pTargetBrain->GetCurrentVelocity();
+								uNeighbourCount++;
+							}
 						}
 					}
 				}
@@ -418,10 +411,19 @@ glm::vec3 BrainComponent::CalculateCohesionForce()
 					{
 						glm::vec3 v3TargetPos = pTargetTransform->GetCurrentPosition();
 						float fDistanceBetween = glm::length(v3LocalPos - v3TargetPos);
-						if (fDistanceBetween < fNEIGHBOURHOOD_RADIUS)
+						if (fDistanceBetween < m_fNEIGHBOURHOOD_RADIUS)
 						{
-							v3AveragePosition += v3TargetPos;
-							uNeighbourCount++;
+							BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTarget->FindComponentOfType(BRAIN));
+							if (pTargetBrain)
+							{
+								//for target leader ness
+								for (int i = 0; i < pTargetBrain->m_iLEADERNESS; ++i)
+								{
+									v3AveragePosition += v3TargetPos;
+									//add that amount also
+									uNeighbourCount++;
+								}
+							}
 						}
 					}
 				}
@@ -448,8 +450,8 @@ glm::vec3 BrainComponent::CalculateCollisionAvoidanceForce()
 	
 		if (pLocalTransform)
 		{
-			glm::vec3 ahead = pLocalTransform->GetCurrentPosition() + glm::normalize(m_v3CurrentVelocity) * fMAX_SEE_AHEAD;
-			glm::vec3 ahead2 = pLocalTransform->GetCurrentPosition() + glm::normalize(m_v3CurrentVelocity) * fMAX_SEE_AHEAD * 0.5f;
+			glm::vec3 ahead = pLocalTransform->GetCurrentPosition() + glm::normalize(m_v3CurrentVelocity) * m_fMAX_SEE_AHEAD;
+			glm::vec3 ahead2 = pLocalTransform->GetCurrentPosition() + glm::normalize(m_v3CurrentVelocity) * m_fMAX_SEE_AHEAD * 0.5f;
 	
 			Entity* mostThreatening = FindMostThreateningObstacle(ahead, ahead2);
 	
@@ -486,7 +488,7 @@ bool BrainComponent::LineIntersectsSphere(glm::vec3 a_ahead, glm::vec3 a_ahead2,
 {
 	ModelComponent* aModel = static_cast<ModelComponent*>(a_Obstacle->FindComponentOfType(MODEL));
 	TransformComponent* aTransform = static_cast<TransformComponent*>(a_Obstacle->FindComponentOfType(TRANSFORM));
-	float radius = aModel->m_radius;
+	float radius = aModel->m_fRadius;
 	return Distance(aTransform->GetCurrentPosition(), a_ahead) <= radius || Distance(aTransform->GetCurrentPosition(), a_ahead2) <= radius;
 }
 

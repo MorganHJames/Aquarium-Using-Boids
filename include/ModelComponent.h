@@ -18,17 +18,15 @@ class ModelComponent : public Component
 private:
 
 public:
-	ModelComponent(Entity* pOwnerEntity, float a_size, float a_radius, float a_length, glm::vec4 a_colour);
+	ModelComponent(Entity* pOwnerEntity, MODELTYPE a_modelType, glm::vec4 a_colour, float a_fRadius);
 
 	~ModelComponent();
-
-	float m_size;
-	float m_radius;
-	float m_length;
 
 	MODELTYPE m_model;
 
 	glm::vec4 m_colour;
+
+	float m_fRadius;
 
 	virtual void Update(float a_fDeltaTime);
 	virtual void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_IBO);
