@@ -2,9 +2,10 @@
 
 typedef Component PARENT;
 
-TransformComponent::TransformComponent(Entity* pOwner, glm::vec3 pos)
+TransformComponent::TransformComponent(Entity* pOwner, glm::vec3 pos, std::string a_sName)
 	: PARENT(pOwner), m_m4EntityMatrix(glm::mat4())
 {
+	m_sName = a_sName;
 	SetCurrentPosition(pos);
 }
 

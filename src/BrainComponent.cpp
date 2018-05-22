@@ -46,6 +46,7 @@ void BrainComponent::Update(float a_fDeltaTime)
 
 	glm::vec3 v3CurrentPos = pTransformComp->GetCurrentPosition();
 
+	AdaptColour(a_fDeltaTime);
 
 	//Behavior Force Calculation
 	glm::vec3 v3TotalForce(0.0f, 0.0f, 0.0f);
@@ -535,4 +536,114 @@ Entity* BrainComponent::FindMostThreateningObstacle(glm::vec3 a_ahead, glm::vec3
 	}
 
 	return mostThreatening;
+}
+
+glm::vec4 BrainComponent::CalculateAverageColour()
+{
+	glm::vec4 v4AverageColour(0.0f, 0.0f, 0.0f, 0.0f);
+
+	unsigned int  uNeighbourCount = 0;
+
+	if (GetOwnerEntity())
+	{
+		TransformComponent* pLocalTransform = static_cast<TransformComponent*>(GetOwnerEntity()->FindComponentOfType(TRANSFORM));
+		if (pLocalTransform)
+		{
+			glm::vec3 v3LocalPos = pLocalTransform->GetCurrentPosition();
+
+			const std::map<const unsigned int, Entity*>& xEntityMap = Entity::GetEntityList();
+			std::map<const unsigned int, Entity*>::const_iterator xIter;
+
+			for (xIter = xEntityMap.begin(); xIter != xEntityMap.end(); ++xIter)
+			{
+				Entity* pTarget = xIter->second;
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_model == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model)
+				{
+					TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
+					BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTarget->FindComponentOfType(BRAIN));
+
+					if (pTargetTransform && pTargetBrain)
+					{
+						glm::vec3 v3TargetPos = pTargetTransform->GetCurrentPosition();
+						float fDistanceBetween = glm::length(v3LocalPos - v3TargetPos);
+						if (fDistanceBetween < m_fNEIGHBOURHOOD_RADIUS)
+						{
+							ModelComponent* pTargetModel = static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL));
+							if (pTargetModel)
+							{
+								for (int i = 0; i < pTargetBrain->m_iLEADERNESS; ++i)
+								{
+									v4AverageColour += pTargetModel->m_colour;
+									uNeighbourCount++;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (glm::length(v4AverageColour) > 0.0f)
+			{
+				v4AverageColour /= uNeighbourCount;
+			}
+
+		}
+	}
+
+	return v4AverageColour;
+}
+
+void BrainComponent::AdaptColour(float a_fDeltaTime)
+{
+	m_fCOLOUR_CHANGE_CURRENT_TIME -= a_fDeltaTime * 0.1f;
+
+	if (m_fCOLOUR_CHANGE_CURRENT_TIME <= 0)
+	{
+		//Get the entity owner
+		Entity* pEntity = GetOwnerEntity();
+		if (!pEntity) return;
+
+		//Get model component
+		ModelComponent* pModelComp = static_cast<ModelComponent*>(pEntity->FindComponentOfType(MODEL));
+		if (!pModelComp) return;
+
+		//Change Color.
+		//Red
+		if (pModelComp->m_colour.x > CalculateAverageColour().x)
+		{
+			pModelComp->m_colour.x -= m_fCOLOUR_CHANGE_AMOUNT;
+		}
+		if (pModelComp->m_colour.x < CalculateAverageColour().x)
+		{
+			pModelComp->m_colour.x += m_fCOLOUR_CHANGE_AMOUNT;
+		}
+		//Green
+		if (pModelComp->m_colour.y > CalculateAverageColour().y)
+		{
+			pModelComp->m_colour.y -= m_fCOLOUR_CHANGE_AMOUNT;
+		}
+		if (pModelComp->m_colour.y < CalculateAverageColour().y)
+		{
+			pModelComp->m_colour.y += m_fCOLOUR_CHANGE_AMOUNT;
+		}
+		//Blue
+		if (pModelComp->m_colour.z > CalculateAverageColour().z)
+		{
+			pModelComp->m_colour.z -= m_fCOLOUR_CHANGE_AMOUNT;
+		}
+		if (pModelComp->m_colour.z < CalculateAverageColour().z)
+		{
+			pModelComp->m_colour.z += m_fCOLOUR_CHANGE_AMOUNT;
+		}
+		//Alpha
+		if (pModelComp->m_colour.w > CalculateAverageColour().w)
+		{
+			pModelComp->m_colour.w -= m_fCOLOUR_CHANGE_AMOUNT;
+		}
+		if (pModelComp->m_colour.w < CalculateAverageColour().w)
+		{
+			pModelComp->m_colour.w += m_fCOLOUR_CHANGE_AMOUNT;
+		}
+		m_fCOLOUR_CHANGE_CURRENT_TIME = m_fCOLOUR_CHANGE_TIME;
+	}
 }

@@ -4,10 +4,10 @@
 
 typedef Entity PARENT;
 
-Obstacle::Obstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour)
+Obstacle::Obstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName)
 {
 	AddComponent(new ModelComponent(this, OBSTACLE, a_colour, a_radius));
-	AddComponent(new TransformComponent(this, a_pos));
+	AddComponent(new TransformComponent(this, a_pos, a_sName));
 }
 
 Obstacle::~Obstacle()

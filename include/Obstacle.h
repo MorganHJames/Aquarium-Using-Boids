@@ -8,7 +8,7 @@
 class Obstacle : public Entity
 {
 public:
-	Obstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour);
+	Obstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName);
 	~Obstacle();
 	
 	float m_size = 1;

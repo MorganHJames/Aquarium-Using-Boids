@@ -2,6 +2,7 @@
 #define _TRANSFORM_COMPONENT_H
 
 #include "Component.h"
+#include <string>
 #include "glm\ext.hpp"
 
 enum MATRIX_ROW
@@ -21,7 +22,7 @@ private:
 	glm::mat4 m_m4EntityMatrix;
 
 public:
-	TransformComponent(Entity* pOwner, glm::vec3 pos);
+	TransformComponent(Entity* pOwner, glm::vec3 pos, std::string a_sName);
 	~TransformComponent();
 
 	virtual void Update(float a_fDeltaTime) {};
@@ -39,6 +40,8 @@ public:
 	void SetCurrentPosition(glm::vec3 vCurrentPosition) { SetEntityMatrixRow(POSITION_VECTOR, vCurrentPosition); }
 
 	const glm::mat4& GetEntityMatrix() { return m_m4EntityMatrix; }
+
+	std::string m_sName;
 };
 
 #endif // _TRANSFORM_COMPONENT_H

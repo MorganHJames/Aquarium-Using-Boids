@@ -35,6 +35,9 @@ public:
 	float m_fMAX_SEE_AHEAD = 15.0f;
 	float m_fWall_CHECK_DISTANCE = 1.0f;
 	float m_fINSTINCT_RANGE = 50.0f;
+	float m_fCOLOUR_CHANGE_AMOUNT = 0.01f;
+	float m_fCOLOUR_CHANGE_TIME = 0.1f;
+	float m_fCOLOUR_CHANGE_CURRENT_TIME = 0.1f;
 	int m_iLEADERNESS = 1;
 
 	//Total Force:
@@ -67,6 +70,10 @@ private:
 	float Distance(glm::vec3 a_A, glm::vec3 a_B);
 	bool LineIntersectsSphere(glm::vec3 a_ahead, glm::vec3 a_ahead2, Entity* a_Obstacle);
 	Entity* FindMostThreateningObstacle(glm::vec3 a_ahead, glm::vec3 a_ahead2);
+
+	//Color Adaption.
+	void AdaptColour(float a_fDeltaTime);
+	glm::vec4 CalculateAverageColour();
 
 	//Flocking behaviors.
 	glm::vec3 CalculateSeperationForce();

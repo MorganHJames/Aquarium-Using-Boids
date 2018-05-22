@@ -29,7 +29,6 @@ public:
 
 	inline const unsigned int GetEntityID() { return m_uEntityID; }
 	inline static const std::map<const unsigned int, Entity*> GetEntityList() { return s_xEntityList; }
-	
 };
 
 #endif // _ENTITY_H

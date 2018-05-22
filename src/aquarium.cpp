@@ -35,37 +35,37 @@ bool aquarium::onCreate()
 	Gizmos::create();
 
 	//Create Fish.
-	Fish* fish1 = new Fish(glm::vec3 (0,0,0), 1, glm::vec4(1, 1, 0, 1));
+	Fish* fish1 = new Fish(glm::vec3 (0,0,0), 1, glm::vec4(1, 1, 0, 1), "Fish 1");
 	m_axFishArray.push_back(fish1);
-	Fish* fish2 = new Fish(glm::vec3(0, 0, 2), 1, glm::vec4(1, 1, 0, 1));
+	Fish* fish2 = new Fish(glm::vec3(0, 0, 2), 1, glm::vec4(1, 1, 0, 1), "Fish 2");
 	m_axFishArray.push_back(fish2);
-	Fish* fish3 = new Fish(glm::vec3(0, 0, 4), 7, glm::vec4(1, 1, 0, 1));
+	Fish* fish3 = new Fish(glm::vec3(0, 0, 4), 1, glm::vec4(1, 1, 0, 1), "Fish 3");
 	m_axFishArray.push_back(fish3);
-	Fish* fish4 = new Fish(glm::vec3(0, 0, 6), 1, glm::vec4(1, 1, 0, 1));
+	Fish* fish4 = new Fish(glm::vec3(0, 0, 6), 1, glm::vec4(1, 1, 0, 1), "Fish 4");
 	m_axFishArray.push_back(fish4);
 
 	//create Sharks.
-	Shark* shark1 = new Shark(glm::vec3(0, 2, 0), 7, glm::vec4(0,1,0,1));
+	Shark* shark1 = new Shark(glm::vec3(0, 2, 0), 2, glm::vec4(0,1,1,1), "Shark 1");
 	m_axSharkArray.push_back(shark1);
-	Shark* shark2 = new Shark(glm::vec3(0, 4, 1), 2, glm::vec4(0,1,0,1));
+	Shark* shark2 = new Shark(glm::vec3(0, 4, 1), 2, glm::vec4(1,1,0,1), "Shark 2");
 	m_axSharkArray.push_back(shark2);
-	Shark* shark3 = new Shark(glm::vec3(0, 6, 2), 2, glm::vec4(0, 1, 0, 1));
+	Shark* shark3 = new Shark(glm::vec3(0, 6, 2), 2, glm::vec4(1, 1, 1, 1), "Shark 3");
 	m_axSharkArray.push_back(shark3);
-	Shark* shark4 = new Shark(glm::vec3(0, 8, 3), 2, glm::vec4(0, 1, 0, 1));
+	Shark* shark4 = new Shark(glm::vec3(0, 8, 3), 2, glm::vec4(0, 0, 0, 1), "Shark 4");
 	m_axSharkArray.push_back(shark4);
 
 	//Create Obstacles.
-	Obstacle* obstacle1 = new Obstacle(glm::vec3(0, 0, 50),  15, glm::vec4(1, 0, 0, 1));
+	Obstacle* obstacle1 = new Obstacle(glm::vec3(0, 0, 50),  15, glm::vec4(1, 0, 0, 1), "Obstacle 1");
 	m_axObstacleArray.push_back(obstacle1);
-	Obstacle* obstacle2 = new Obstacle(glm::vec3(0, 50, 0), 15, glm::vec4(1, 0, 0, 1));
+	Obstacle* obstacle2 = new Obstacle(glm::vec3(0, 50, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 2");
 	m_axObstacleArray.push_back(obstacle2);
-	Obstacle* obstacle3 = new Obstacle(glm::vec3(0, 0, -50), 15, glm::vec4(1, 0, 0, 1));
+	Obstacle* obstacle3 = new Obstacle(glm::vec3(0, 0, -50), 15, glm::vec4(1, 0, 0, 1), "Obstacle 3");
 	m_axObstacleArray.push_back(obstacle3);
-	Obstacle* obstacle4 = new Obstacle(glm::vec3(0, -50, 0), 15, glm::vec4(1, 0, 0, 1));
+	Obstacle* obstacle4 = new Obstacle(glm::vec3(0, -50, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 4");
 	m_axObstacleArray.push_back(obstacle4);
-	Obstacle* obstacle5 = new Obstacle(glm::vec3(50, 0, 0), 15, glm::vec4(1, 0, 0, 1));
+	Obstacle* obstacle5 = new Obstacle(glm::vec3(50, 0, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 5");
 	m_axObstacleArray.push_back(obstacle5);
-	Obstacle* obstacle6 = new Obstacle(glm::vec3(-50, 0, 0), 15, glm::vec4(1, 0, 0, 1));
+	Obstacle* obstacle6 = new Obstacle(glm::vec3(-50, 0, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 6");
 	m_axObstacleArray.push_back(obstacle6);
 
 	// create a world-space matrix for a camera
@@ -92,16 +92,6 @@ void aquarium::Update(float a_deltaTime)
 
 	// add an identity matrix gizmo
 	Gizmos::addTransform(glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
-	
-	// add a 20x20 grid on the XZ-plane
-	//for (int i = 0; i < 21; ++i)
-	//{
-	//	Gizmos::addLine(glm::vec3(-10 + i, 0, 10), glm::vec3(-10 + i, 0, -10),
-	//		i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0, 0, 0, 1));
-	//
-	//	Gizmos::addLine(glm::vec3(10, 0, -10 + i), glm::vec3(-10, 0, -10 + i),
-	//		i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0, 0, 0, 1));
-	//}
 
 	// Create the bounding box
 	Gizmos::addBox(glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f), false, glm::vec4(1.f, 1.0f, 1.f, 1.f));
