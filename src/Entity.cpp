@@ -12,7 +12,6 @@ Entity::Entity()
 
 Entity::~Entity()
 {
-
 }
 
 void Entity::Update(float a_fDeltaTime)
@@ -42,4 +41,16 @@ Component* Entity::FindComponentOfType(COMPONENT_TYPE eComponentType)
 		}
 	}
 	return NULL;
+}
+
+void Entity::RemoveEntity(Entity* a_entity)
+{
+	for (std::map<const unsigned int, Entity*>::iterator it = s_xEntityList.begin(); it != s_xEntityList.end(); it++)
+	{
+		if ((it->second) == a_entity)
+		{
+			s_xEntityList.erase(it);
+			break;
+		}
+	}
 }

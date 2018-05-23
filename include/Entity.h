@@ -16,7 +16,6 @@ private:
 protected:
 	std::vector<Component*>m_apComponentList;
 
-
 public:
 	Entity();
 	~Entity();
@@ -26,6 +25,8 @@ public:
 
 	void AddComponent(Component* a_pComponent) { m_apComponentList.push_back(a_pComponent); }
 	Component* FindComponentOfType(COMPONENT_TYPE eComponentType);
+
+	void RemoveEntity(Entity* a_entity);
 
 	inline const unsigned int GetEntityID() { return m_uEntityID; }
 	inline static const std::map<const unsigned int, Entity*> GetEntityList() { return s_xEntityList; }

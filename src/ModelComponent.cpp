@@ -47,7 +47,7 @@ void ModelComponent::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsign
 	{
 		//Get brain component
 		BrainComponent* pBrainComp = static_cast<BrainComponent*>(pEntity->FindComponentOfType(BRAIN));
-		Gizmos::addCylinder(pTransformComp->GetCurrentPosition(), pBrainComp->m_iLEADERNESS, pBrainComp->m_iLEADERNESS * 0.5f, 10, true,m_colour, pTransformComp->GetEntityMatrix());
+		Gizmos::addCylinder(pTransformComp->GetCurrentPosition(), (float)pBrainComp->m_iLEADERNESS, pBrainComp->m_iLEADERNESS * 0.5f, 10, true,m_colour, pTransformComp->GetEntityMatrix());
 	}
 	else if (m_model == OBSTACLE)
 	{

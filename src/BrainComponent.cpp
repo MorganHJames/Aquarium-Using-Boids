@@ -23,76 +23,79 @@ BrainComponent::~BrainComponent()
 
 void BrainComponent::Update(float a_fDeltaTime)
 {
-	//Get the entity owner
-	Entity* pEntity = GetOwnerEntity();
-	if (!pEntity) return;
-
-	//Get transform component
-	TransformComponent* pTransformComp = static_cast<TransformComponent*>(pEntity->FindComponentOfType(TRANSFORM));
-	if (!pTransformComp) return;
-
-	//Get forward and pos
-	glm::vec3 v3Forward = pTransformComp->GetFacingDirection();
-	glm::vec3 v3Up = pTransformComp->GetUpDirection();
-
-
-	//gram schmist orthonomalisation process
-	v3Up = v3Up - (v3Forward * glm::dot(v3Forward, v3Up));
-	v3Up = glm::normalize(v3Up);
-	glm::vec3 v3Right = glm::cross(v3Up, v3Forward);
-	v3Right = glm::normalize(v3Right);
-	pTransformComp->SetUpDirection(v3Up);
-	pTransformComp->SetRightDirection(v3Right);
-
-	glm::vec3 v3CurrentPos = pTransformComp->GetCurrentPosition();
-
-	AdaptColour(a_fDeltaTime);
-
-	//Behavior Force Calculation
-	glm::vec3 v3TotalForce(0.0f, 0.0f, 0.0f);
-
-	glm::vec3 v3ContainmentForce = CalculateContainmentForce(v3CurrentPos);
-	glm::vec3 v3WanderForce = CalculateWanderForce(v3CurrentPos, v3Forward);
-	glm::vec3 v3InstinctiveForce = CalculateInstinctForce(v3CurrentPos);
-	glm::vec3 v3SeperationForce = CalculateSeperationForce();
-	glm::vec3 v3AlignmentForce = CalculateAlignmentForce();
-	glm::vec3 v3CohesionForce = CalculateCohesionForce();
-	glm::vec3 v3CollisionAvoidanceForce = CalculateCollisionAvoidanceForce();
-
-	v3TotalForce = 
-		(v3WanderForce * m_fWanderForce)
-		+ (v3InstinctiveForce * m_fInstinctiveForce)
-		+ (v3SeperationForce * m_fSeperationForce)
-		+ (v3AlignmentForce * m_fAlignmentForce)
-		+ (v3CohesionForce * m_fCohesionForce)
-		+ (v3CollisionAvoidanceForce * m_fCollisionAvoidanceForce)
-		+ (v3ContainmentForce * m_fContainmentForce);
-
-	///////////////////////////////////////////////////
-	
-	m_v3CurrentVelocity += v3TotalForce;
-
-	//Clamp velocity.
-	m_v3CurrentVelocity = glm::clamp(m_v3CurrentVelocity, glm::vec3(-10.0f, -10.0f,-10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
-
-	//Apply the velocity to position
-	v3CurrentPos += m_v3CurrentVelocity * a_fDeltaTime;
-
-	if (glm::length(m_v3CurrentVelocity) > 0.0f)
+	if (a_fDeltaTime != 0)
 	{
-		v3Forward = glm::normalize(m_v3CurrentVelocity);
+		//Get the entity owner
+		Entity* pEntity = GetOwnerEntity();
+		if (!pEntity) return;
+
+		//Get transform component
+		TransformComponent* pTransformComp = static_cast<TransformComponent*>(pEntity->FindComponentOfType(TRANSFORM));
+		if (!pTransformComp) return;
+
+		//Get forward and pos
+		glm::vec3 v3Forward = pTransformComp->GetFacingDirection();
+		glm::vec3 v3Up = pTransformComp->GetUpDirection();
+
+
+		//gram schmist orthonomalisation process
+		v3Up = v3Up - (v3Forward * glm::dot(v3Forward, v3Up));
+		v3Up = glm::normalize(v3Up);
+		glm::vec3 v3Right = glm::cross(v3Up, v3Forward);
+		v3Right = glm::normalize(v3Right);
+		pTransformComp->SetUpDirection(v3Up);
+		pTransformComp->SetRightDirection(v3Right);
+
+		glm::vec3 v3CurrentPos = pTransformComp->GetCurrentPosition();
+
+		AdaptColour(a_fDeltaTime);
+
+		//Behavior Force Calculation
+		glm::vec3 v3TotalForce(0.0f, 0.0f, 0.0f);
+
+		glm::vec3 v3ContainmentForce = CalculateContainmentForce(v3CurrentPos);
+		glm::vec3 v3WanderForce = CalculateWanderForce(v3CurrentPos, v3Forward);
+		glm::vec3 v3InstinctiveForce = CalculateInstinctForce(v3CurrentPos);
+		glm::vec3 v3SeperationForce = CalculateSeperationForce();
+		glm::vec3 v3AlignmentForce = CalculateAlignmentForce();
+		glm::vec3 v3CohesionForce = CalculateCohesionForce();
+		glm::vec3 v3CollisionAvoidanceForce = CalculateCollisionAvoidanceForce();
+
+		v3TotalForce =
+			(v3WanderForce * m_fWanderForce)
+			+ (v3InstinctiveForce * m_fInstinctiveForce)
+			+ (v3SeperationForce * m_fSeperationForce)
+			+ (v3AlignmentForce * m_fAlignmentForce)
+			+ (v3CohesionForce * m_fCohesionForce)
+			+ (v3CollisionAvoidanceForce * m_fCollisionAvoidanceForce)
+			+ (v3ContainmentForce * m_fContainmentForce);
+
+		///////////////////////////////////////////////////
+
+		m_v3CurrentVelocity += v3TotalForce;
+
+		//Clamp velocity.
+		m_v3CurrentVelocity = glm::clamp(m_v3CurrentVelocity, glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
+
+		//Apply the velocity to position
+		v3CurrentPos += m_v3CurrentVelocity * a_fDeltaTime;
+
+		if (glm::length(m_v3CurrentVelocity) > 0.0f)
+		{
+			v3Forward = glm::normalize(m_v3CurrentVelocity);
+		}
+
+		//Initialize target vector
+		glm::vec3 v3NewTarget = { 0.f,0.f,0.f };
+
+		glm::vec3 up = pTransformComp->GetUpDirection();
+		glm::vec3 right = glm::cross(up, v3Forward);
+
+		pTransformComp->SetRightDirection(right);
+		pTransformComp->SetFacingDirection(v3Forward);
+		pTransformComp->SetUpDirection(up);
+		pTransformComp->SetCurrentPosition(v3CurrentPos);
 	}
-
-	//Initialize target vector
-	glm::vec3 v3NewTarget = { 0.f,0.f,0.f };
-
-	glm::vec3 up = pTransformComp->GetUpDirection();
-	glm::vec3 right = glm::cross(up, v3Forward);
-
-	pTransformComp->SetRightDirection(right);
-	pTransformComp->SetFacingDirection(v3Forward);
-	pTransformComp->SetUpDirection(up);
-	pTransformComp->SetCurrentPosition(v3CurrentPos);
 }
 
 void BrainComponent::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
@@ -108,8 +111,11 @@ glm::vec3 BrainComponent::CalculateSeekForce(const glm::vec3& v3Target, const gl
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
 	//Add gizmos
-	Gizmos::addCircle(v3Target, 2, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
-	Gizmos::addLine(v3CurrentPos, v3Target, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+	if (m_bGizmos)
+	{
+		Gizmos::addCircle(v3Target, 2, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+		Gizmos::addLine(v3CurrentPos, v3Target, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+	}
 
 	return v3Force;
 }
@@ -132,9 +138,11 @@ glm::vec3 BrainComponent::CalculateFleeForce(const glm::vec3& v3Target, const gl
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
 	//Add gizmos
-	Gizmos::addCircle(v3Target, 2, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
-	Gizmos::addLine(v3CurrentPos, v3Target, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
-
+	if (m_bGizmos)
+	{
+		Gizmos::addCircle(v3Target, 2, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+		Gizmos::addLine(v3CurrentPos, v3Target, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+	}
 	return v3Force;
 }
 
@@ -169,13 +177,15 @@ glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& v3CurrentPos, co
 	glm::vec3 v3NewVelocity = v3TargetDir * m_fMAX_SPEED;
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
-	//Gizmos
-	Gizmos::addLine(v3CurrentPos, v3WanderSphereOrigin, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-	Gizmos::addLine(v3WanderSphereOrigin, v3RandPointInSphere, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	Gizmos::addLine(v3RandPointInSphere, v3RandTargetVec, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-	Gizmos::addLine(v3WanderSphereOrigin, v3Target, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	Gizmos::addCircle(v3WanderSphereOrigin, m_fWANDER_RADIUS, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
-
+	//Add gizmos
+	if (m_bGizmos)
+	{
+		Gizmos::addLine(v3CurrentPos, v3WanderSphereOrigin, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+		Gizmos::addLine(v3WanderSphereOrigin, v3RandPointInSphere, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		Gizmos::addLine(v3RandPointInSphere, v3RandTargetVec, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+		Gizmos::addLine(v3WanderSphereOrigin, v3Target, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		Gizmos::addCircle(v3WanderSphereOrigin, m_fWANDER_RADIUS, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+	}
 	return v3Force;
 }
 

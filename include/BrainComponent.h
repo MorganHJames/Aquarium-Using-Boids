@@ -39,6 +39,7 @@ public:
 	float m_fCOLOUR_CHANGE_TIME = 0.001f;
 	float m_fCOLOUR_CHANGE_CURRENT_TIME = 0.1f;
 	int m_iLEADERNESS = 1;
+	bool m_bGizmos = false;
 
 	//Total Force:
 	float m_fWanderForce = 0.3f;

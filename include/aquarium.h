@@ -47,14 +47,20 @@ private:
 
 	glm::vec4 m_lightPos;
 
+	bool m_bPaused = false;
+
+	std::string pauseName = "Pause";
+
+	void Pause();
+
 	void SetupEntities();
 	void ResetEntities();
 
-	void SpawnFish(glm::vec3 a_v3Pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName);
+	void SpawnFish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName);
 	void DestroyFish(Fish* a_fish);
 	void DestroyAllFish();
 
-	void SpawnShark(glm::vec3 pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName);
+	void SpawnShark(glm::vec3 pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName);
 	void DestroyShark(Shark* a_shark);
 	void DestroyAllSharks();
 

@@ -58,11 +58,13 @@ void aquarium::Update(float a_deltaTime)
 	// update our camera matrix using the keyboard/mouse
 	Utility::freeMovement(m_cameraMatrix, a_deltaTime, 10);
 
+	if (m_bPaused)
+	{
+		a_deltaTime = 0;
+	}
+
 	// clear all gizmos from last frame
 	Gizmos::clear();
-
-	// add an identity matrix gizmo
-	Gizmos::addTransform(glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
 
 	// Create the bounding box
 	Gizmos::addBox(glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f), false, glm::vec4(1.f, 1.0f, 1.f, 1.f));
@@ -91,20 +93,60 @@ void aquarium::Update(float a_deltaTime)
 
 #pragma region ImGui
 
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-	static float f = 0.0f;
-	static int counter = 0;
-	ImGui::Begin("Spawn Entity");
-	ImGui::End();
+	ImGui::Begin("General Controls");
 
+	//Pause/Resume
+	if (ImGui::Button(pauseName.c_str()))
+	{
+		if (pauseName == "Resume")
+		{
+			pauseName = "Pause";
+		}
+		else
+		{
+			pauseName = "Resume";
+		}
+
+		Pause();
+	}
+	
+	//Reset
+	if (ImGui::Button("Reset"))
+	{
+		ResetEntities();
+	}
+
+	//Destroy all fish
+	if (ImGui::Button("Destroy All Fish"))
+	{
+		DestroyAllFish();
+	}
+
+	//Destroy all sharks
+	if (ImGui::Button("Destroy All Sharks"))
+	{
+		DestroyAllSharks();
+	}
+
+	//Destroy all obstacles
+	if (ImGui::Button("Destroy All Obstacles"))
+	{
+		DestroyAllObstacles();
+	}
+
+	//Destroy all entities
+	if (ImGui::Button("Destroy All Entities"))
+	{
+		DestroyAllEntities();
+	}
+
+	ImGui::End();
 
 #pragma endregion
 
 	// quit our application when escape is pressed
 	if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		quit();
-
-
 }
 
 void aquarium::Draw()
@@ -181,9 +223,9 @@ void aquarium::ResetEntities()
 	SetupEntities();
 }
 
-void aquarium::SpawnFish(glm::vec3 a_v3Pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName)
+void aquarium::SpawnFish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName)
 {
-	Fish* fish = new Fish(a_v3Pos, a_fLeaderness, a_colour, a_sName);
+	Fish* fish = new Fish(a_v3Pos, a_iLeaderness, a_colour, a_sName);
 	m_axFishArray.push_back(fish);
 }
 
@@ -195,18 +237,27 @@ void aquarium::DestroyFish(Fish* a_fish)
 		if (*xIter == a_fish)
 		{
 			m_axFishArray.erase(xIter);
+
+			Entity* pCurrentEntity = *xIter;
+			pCurrentEntity->RemoveEntity(pCurrentEntity);
 		}
 	}
 }
 
 void aquarium::DestroyAllFish()
 {
+	std::vector< Fish* >::iterator xIter;
+	for (xIter = m_axFishArray.begin(); xIter < m_axFishArray.end(); ++xIter)
+	{
+		Entity* pCurrentEntity = *xIter;
+		pCurrentEntity->RemoveEntity(pCurrentEntity);
+	}
 	m_axFishArray.clear();
 }
 
-void aquarium::SpawnShark(glm::vec3 pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName)
+void aquarium::SpawnShark(glm::vec3 pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName)
 {
-	Shark* shark = new Shark(pos, a_fLeaderness, a_colour, a_sName);
+	Shark* shark = new Shark(pos, a_iLeaderness, a_colour, a_sName);
 	m_axSharkArray.push_back(shark);
 }
 
@@ -218,12 +269,22 @@ void aquarium::DestroyShark(Shark* a_shark)
 		if (*xIter == a_shark)
 		{
 			m_axSharkArray.erase(xIter);
+
+			Entity* pCurrentEntity = *xIter;
+			pCurrentEntity->RemoveEntity(pCurrentEntity);
 		}
 	}
 }
 
 void aquarium::DestroyAllSharks()
 {
+	std::vector< Shark* >::iterator xIter;
+	for (xIter = m_axSharkArray.begin(); xIter < m_axSharkArray.end(); ++xIter)
+	{
+		Entity* pCurrentEntity = *xIter;
+		pCurrentEntity->RemoveEntity(pCurrentEntity);
+	}
+
 	m_axSharkArray.clear();
 }
 
@@ -241,12 +302,21 @@ void aquarium::DestroyObstacle(Obstacle* a_obstacle)
 		if (*xIter == a_obstacle)
 		{
 			m_axObstacleArray.erase(xIter);
+
+			Entity* pCurrentEntity = *xIter;
+			pCurrentEntity->RemoveEntity(pCurrentEntity);
 		}
 	}
 }
 
 void aquarium::DestroyAllObstacles()
 {
+	std::vector< Obstacle* >::iterator xIter;
+	for (xIter = m_axObstacleArray.begin(); xIter < m_axObstacleArray.end(); ++xIter)
+	{
+		Entity* pCurrentEntity = *xIter;
+		pCurrentEntity->RemoveEntity(pCurrentEntity);
+	}
 	m_axObstacleArray.clear();
 }
 
@@ -260,4 +330,9 @@ void aquarium::DestroyAllEntities()
 void aquarium::Destroy()
 {
 	Gizmos::destroy();
+}
+
+void aquarium::Pause()
+{
+	m_bPaused = !m_bPaused;
 }
