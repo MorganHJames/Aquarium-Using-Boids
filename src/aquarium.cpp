@@ -1,5 +1,6 @@
 #include "aquarium.h"
 #include "Constants.h"
+#include "BrainComponent.h"
 // Core includes
 #include <iostream>
 #include <time.h>
@@ -94,6 +95,303 @@ void aquarium::Update(float a_deltaTime)
 
 #pragma region GUI
 
+#pragma region Fish Behavior
+	//Fish Behavior
+	ImGui::Begin("Fish Behavior");
+
+	std::vector< Fish* >::iterator xIter2;
+	for (xIter2 = m_axFishArray.begin(); xIter2 < m_axFishArray.end(); ++xIter2)
+	{
+		Entity* pCurrentEntity = *xIter2;
+		if (pCurrentEntity)
+		{
+			BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pCurrentEntity->FindComponentOfType(BRAIN));
+			pCurrentBrain->m_fMAX_SPEED = m_fFishMAX_SPEED;
+			pCurrentBrain->m_fJITTER = m_fFishJITTER;
+			pCurrentBrain->m_fWANDER_RADIUS = m_fFishWANDER_RADIUS;
+			pCurrentBrain->m_fSPHERE_FORWARD_MULTIPLIER = m_fFishSPHERE_FORWARD_MULTIPLIER;
+			pCurrentBrain->m_fNEIGHBOURHOOD_RADIUS = m_fFishNEIGHBOURHOOD_RADIUS;
+			pCurrentBrain->m_fMAX_SEE_AHEAD = m_fFishMAX_SEE_AHEAD;
+			pCurrentBrain->m_fWall_CHECK_DISTANCE = m_fFishWall_CHECK_DISTANCE;
+			pCurrentBrain->m_fINSTINCT_RANGE = m_fFishINSTINCT_RANGE;
+			pCurrentBrain->m_fCOLOUR_CHANGE_TIME = m_fFishCOLOUR_CHANGE_TIME;
+
+			//Total Force:
+			pCurrentBrain->m_fWanderForce = m_fFishWanderForce;
+			pCurrentBrain->m_fInstinctiveForce = m_fFishInstinctiveForce;
+			pCurrentBrain->m_fSeperationForce = m_fFishSeperationForce;
+			pCurrentBrain->m_fAlignmentForce = m_fFishAlignmentForce;
+			pCurrentBrain->m_fCohesionForce = m_fFishCohesionForce;
+			pCurrentBrain->m_fCollisionAvoidanceForce = m_fFishCollisionAvoidanceForce;
+			pCurrentBrain->m_fContainmentForce = m_fFishContainmentForce;
+		}
+	}
+
+	//View All Fish Gizmos
+	if (ImGui::Button("View All Fish Gizmos", ImVec2(175, 50)))
+	{
+		std::vector< Fish* >::iterator xIter;
+		for (xIter = m_axFishArray.begin(); xIter < m_axFishArray.end(); ++xIter)
+		{
+			Entity* pCurrentEntity = *xIter;
+			if (pCurrentEntity)
+			{
+				BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pCurrentEntity->FindComponentOfType(BRAIN));
+				pCurrentBrain->m_bGizmos = true;
+			}
+		}
+	
+	}
+
+	ImGui::NewLine();
+	//Hide All Fish Gizmos
+	if (ImGui::Button("Hide All Fish Gizmos", ImVec2(175, 50)))
+	{
+		std::vector< Fish* >::iterator xIter;
+		for (xIter = m_axFishArray.begin(); xIter < m_axFishArray.end(); ++xIter)
+		{
+			Entity* pCurrentEntity = *xIter;
+			if (pCurrentEntity)
+			{
+				BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pCurrentEntity->FindComponentOfType(BRAIN));
+				pCurrentBrain->m_bGizmos = false;
+			}
+		}
+	}
+	ImGui::NewLine();
+
+	//Wander Force
+	ImGui::Text("Wander Force");
+	ImGui::SliderFloat("Wander Force", &m_fFishWanderForce, 0.0f, 1.0f);
+	ImGui::NewLine();
+
+	//Instinctive Force
+	ImGui::Text("Instinctive Force");
+	ImGui::SliderFloat("Instinctive Force", &m_fFishInstinctiveForce, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Separation Force
+	ImGui::Text("Separation Force");
+	ImGui::SliderFloat("Separation Force", &m_fFishSeperationForce, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Alignment Force
+	ImGui::Text("Alignment Force");
+	ImGui::SliderFloat("Alignment Force", &m_fFishAlignmentForce, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Cohesion Force
+	ImGui::Text("Cohesion Force");
+	ImGui::SliderFloat("Cohesion Force", &m_fFishCohesionForce, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Collision Force
+	ImGui::Text("Collision Force");
+	ImGui::SliderFloat("Collision Force", &m_fFishCollisionAvoidanceForce, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Containment Force
+	ImGui::Text("Containment Force");
+	ImGui::SliderFloat("Containment Force", &m_fFishContainmentForce, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Speed
+	ImGui::Text("Speed");
+	ImGui::SliderFloat("Max Speed", &m_fFishMAX_SPEED, 1.00f, 1000.0f);
+	ImGui::NewLine();
+
+	//Jitter
+	ImGui::Text("Jitter");
+	ImGui::SliderFloat("Jitter", &m_fFishJITTER, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Wander Radius
+	ImGui::Text("Wander Radius");
+	ImGui::SliderFloat("Wander Radius", &m_fFishWANDER_RADIUS, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Forward Multiplier
+	ImGui::Text("Forward Multiplier");
+	ImGui::SliderFloat("Forward Multiplier", &m_fFishSPHERE_FORWARD_MULTIPLIER, 0.0f, 100.0f);
+	ImGui::NewLine();
+
+	//Neighborhood Radius
+	ImGui::Text("Neighborhood Radius");
+	ImGui::SliderFloat("Neighborhood Radius", &m_fFishNEIGHBOURHOOD_RADIUS, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Obstacle View Distance
+	ImGui::Text("Obstacle View Distance");
+	ImGui::SliderFloat("Obstacle View Distance", &m_fFishMAX_SEE_AHEAD, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Wall View Distance
+	ImGui::Text("Wall View Distance");
+	ImGui::SliderFloat("Wall View Distance", &m_fFishWall_CHECK_DISTANCE, 0.0f, 100.0f);
+	ImGui::NewLine();
+
+	//Instinct Range
+	ImGui::Text("Instinct Range");
+	ImGui::SliderFloat("Instinct Range", &m_fFishINSTINCT_RANGE, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Color Change Rate
+	ImGui::Text("Color Change Rate");
+	ImGui::SliderFloat("Color Change Rate", &m_fFishCOLOUR_CHANGE_TIME, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	ImGui::End();
+
+#pragma endregion
+
+#pragma region Shark Behavior
+	//Shark Behavior
+	ImGui::Begin("Shark Behavior");
+
+	std::vector< Shark* >::iterator xIter3;
+	for (xIter3 = m_axSharkArray.begin(); xIter3< m_axSharkArray.end(); ++xIter3)
+	{
+		Entity* pCurrentEntity = *xIter3;
+		if (pCurrentEntity)
+		{
+			BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pCurrentEntity->FindComponentOfType(BRAIN));
+			pCurrentBrain->m_fMAX_SPEED = m_fSharkMAX_SPEED;
+			pCurrentBrain->m_fJITTER = m_fSharkJITTER;
+			pCurrentBrain->m_fWANDER_RADIUS = m_fSharkWANDER_RADIUS;
+			pCurrentBrain->m_fSPHERE_FORWARD_MULTIPLIER = m_fSharkSPHERE_FORWARD_MULTIPLIER;
+			pCurrentBrain->m_fNEIGHBOURHOOD_RADIUS = m_fSharkNEIGHBOURHOOD_RADIUS;
+			pCurrentBrain->m_fMAX_SEE_AHEAD = m_fSharkMAX_SEE_AHEAD;
+			pCurrentBrain->m_fWall_CHECK_DISTANCE = m_fSharkWall_CHECK_DISTANCE;
+			pCurrentBrain->m_fINSTINCT_RANGE = m_fSharkINSTINCT_RANGE;
+			pCurrentBrain->m_fCOLOUR_CHANGE_TIME = m_fSharkCOLOUR_CHANGE_TIME;
+
+			//Total Force:
+			pCurrentBrain->m_fWanderForce = m_fSharkWanderForce;
+			pCurrentBrain->m_fInstinctiveForce = m_fSharkInstinctiveForce;
+			pCurrentBrain->m_fSeperationForce = m_fSharkSeperationForce;
+			pCurrentBrain->m_fAlignmentForce = m_fSharkAlignmentForce;
+			pCurrentBrain->m_fCohesionForce = m_fSharkCohesionForce;
+			pCurrentBrain->m_fCollisionAvoidanceForce = m_fSharkCollisionAvoidanceForce;
+			pCurrentBrain->m_fContainmentForce = m_fSharkContainmentForce;
+		}
+	}
+
+	//View All Shark Gizmos
+	if (ImGui::Button("View All Shark Gizmos", ImVec2(175, 50)))
+	{
+		std::vector< Shark* >::iterator xIter;
+		for (xIter = m_axSharkArray.begin(); xIter < m_axSharkArray.end(); ++xIter)
+		{
+			Entity* pCurrentEntity = *xIter;
+			if (pCurrentEntity)
+			{
+				BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pCurrentEntity->FindComponentOfType(BRAIN));
+				pCurrentBrain->m_bGizmos = true;
+			}
+		}
+
+	}
+
+	ImGui::NewLine();
+	//Hide All Shark Gizmos
+	if (ImGui::Button("Hide All Shark Gizmos", ImVec2(175, 50)))
+	{
+		std::vector< Shark* >::iterator xIter;
+		for (xIter = m_axSharkArray.begin(); xIter < m_axSharkArray.end(); ++xIter)
+		{
+			Entity* pCurrentEntity = *xIter;
+			if (pCurrentEntity)
+			{
+				BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pCurrentEntity->FindComponentOfType(BRAIN));
+				pCurrentBrain->m_bGizmos = false;
+			}
+		}
+	}
+	ImGui::NewLine();
+
+	//Wander Force
+	ImGui::Text("Wander Force");
+	ImGui::SliderFloat("Wander Force", &m_fSharkWanderForce, 0.0f, 1.0f);
+	ImGui::NewLine();
+
+	//Instinctive Force
+	ImGui::Text("Instinctive Force");
+	ImGui::SliderFloat("Instinctive Force", &m_fSharkInstinctiveForce, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Separation Force
+	ImGui::Text("Separation Force");
+	ImGui::SliderFloat("Separation Force", &m_fSharkSeperationForce, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Alignment Force
+	ImGui::Text("Alignment Force");
+	ImGui::SliderFloat("Alignment Force", &m_fSharkAlignmentForce, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Cohesion Force
+	ImGui::Text("Cohesion Force");
+	ImGui::SliderFloat("Cohesion Force", &m_fSharkCohesionForce, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Collision Force
+	ImGui::Text("Collision Force");
+	ImGui::SliderFloat("Collision Force", &m_fSharkCollisionAvoidanceForce, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Containment Force
+	ImGui::Text("Containment Force");
+	ImGui::SliderFloat("Containment Force", &m_fSharkContainmentForce, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Speed
+	ImGui::Text("Speed");
+	ImGui::SliderFloat("Max Speed", &m_fSharkMAX_SPEED, 1.00f, 1000.0f);
+	ImGui::NewLine();
+
+	//Jitter
+	ImGui::Text("Jitter");
+	ImGui::SliderFloat("Jitter", &m_fSharkJITTER, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Wander Radius
+	ImGui::Text("Wander Radius");
+	ImGui::SliderFloat("Wander Radius", &m_fSharkWANDER_RADIUS, 0.0f, 10.0f);
+	ImGui::NewLine();
+
+	//Forward Multiplier
+	ImGui::Text("Forward Multiplier");
+	ImGui::SliderFloat("Forward Multiplier", &m_fSharkSPHERE_FORWARD_MULTIPLIER, 0.0f, 100.0f);
+	ImGui::NewLine();
+
+	//Neighborhood Radius
+	ImGui::Text("Neighborhood Radius");
+	ImGui::SliderFloat("Neighborhood Radius", &m_fSharkNEIGHBOURHOOD_RADIUS, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Obstacle View Distance
+	ImGui::Text("Obstacle View Distance");
+	ImGui::SliderFloat("Obstacle View Distance", &m_fSharkMAX_SEE_AHEAD, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Wall View Distance
+	ImGui::Text("Wall View Distance");
+	ImGui::SliderFloat("Wall View Distance", &m_fSharkWall_CHECK_DISTANCE, 0.0f, 100.0f);
+	ImGui::NewLine();
+
+	//Instinct Range
+	ImGui::Text("Instinct Range");
+	ImGui::SliderFloat("Instinct Range", &m_fSharkINSTINCT_RANGE, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	//Color Change Rate
+	ImGui::Text("Color Change Rate");
+	ImGui::SliderFloat("Color Change Rate", &m_fSharkCOLOUR_CHANGE_TIME, 0.0f, 1000.0f);
+	ImGui::NewLine();
+
+	ImGui::End();
+
+#pragma endregion
 
 #pragma region General Controls
 
@@ -153,8 +451,8 @@ void aquarium::Update(float a_deltaTime)
 
 #pragma endregion
 
-#pragma region Fish
-//Fish
+#pragma region Fish Spawn
+//Fish Spawn
 ImGui::Begin("Spawn Fish");
 
 //Name
@@ -190,8 +488,8 @@ ImGui::End();
 
 #pragma endregion
 
-#pragma region Shark
-//Shark
+#pragma region Shark Spawn
+//Shark Spawn
 ImGui::Begin("Spawn Shark");
 
 //Name
@@ -227,8 +525,8 @@ ImGui::End();
 
 #pragma endregion
 
-#pragma region Obstacle
-//Obstacle
+#pragma region Obstacle Spawn
+//Obstacle Spawn
 ImGui::Begin("Spawn Obstacle");
 
 //Name

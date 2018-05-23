@@ -71,6 +71,46 @@ private:
 	float iObstacleRadius = 1;
 	float m_fObstacleColour[4];
 
+	//Fish Behavior
+	float m_fFishMAX_SPEED = 5.5f;
+	float m_fFishJITTER = 0.9f;
+	float m_fFishWANDER_RADIUS = 2.0f;
+	float m_fFishSPHERE_FORWARD_MULTIPLIER = 10.0f;
+	float m_fFishNEIGHBOURHOOD_RADIUS = 40.0f;
+	float m_fFishMAX_SEE_AHEAD = 15.0f;
+	float m_fFishWall_CHECK_DISTANCE = 1.0f;
+	float m_fFishINSTINCT_RANGE = 50.0f;
+	float m_fFishCOLOUR_CHANGE_TIME = 0.0000001f;
+
+	//Fish Total Force:
+	float m_fFishWanderForce = 0.3f;
+	float m_fFishInstinctiveForce = 0.3f;
+	float m_fFishSeperationForce = 2.0f;
+	float m_fFishAlignmentForce = 0.8f;
+	float m_fFishCohesionForce = 1.5f;
+	float m_fFishCollisionAvoidanceForce = 10.0f;
+	float m_fFishContainmentForce = 100.0f;
+
+	//Shark Behavior
+	float m_fSharkMAX_SPEED = 5.5f;
+	float m_fSharkJITTER = 0.9f;
+	float m_fSharkWANDER_RADIUS = 2.0f;
+	float m_fSharkSPHERE_FORWARD_MULTIPLIER = 10.0f;
+	float m_fSharkNEIGHBOURHOOD_RADIUS = 40.0f;
+	float m_fSharkMAX_SEE_AHEAD = 15.0f;
+	float m_fSharkWall_CHECK_DISTANCE = 1.0f;
+	float m_fSharkINSTINCT_RANGE = 50.0f;
+	float m_fSharkCOLOUR_CHANGE_TIME = 0.0000001f;
+
+	//Shark Total Force:
+	float m_fSharkWanderForce = 0.3f;
+	float m_fSharkInstinctiveForce = 0.3f;
+	float m_fSharkSeperationForce = 2.0f;
+	float m_fSharkAlignmentForce = 0.8f;
+	float m_fSharkCohesionForce = 1.5f;
+	float m_fSharkCollisionAvoidanceForce = 10.0f;
+	float m_fSharkContainmentForce = 100.0f;
+
 	void Pause();
 
 	void SetupEntities();
