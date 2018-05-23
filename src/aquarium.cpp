@@ -36,39 +36,8 @@ bool aquarium::onCreate()
 	// initialise the Gizmos helper class.
 	Gizmos::create();
 
-	//Create Fish.
-	Fish* fish1 = new Fish(glm::vec3 (0,0,0), 1, glm::vec4(1, 1, 0, 1), "Fish 1");
-	m_axFishArray.push_back(fish1);
-	Fish* fish2 = new Fish(glm::vec3(0, 0, 2), 1, glm::vec4(1, 1, 0, 1), "Fish 2");
-	m_axFishArray.push_back(fish2);
-	Fish* fish3 = new Fish(glm::vec3(0, 0, 4), 1, glm::vec4(1, 1, 0, 1), "Fish 3");
-	m_axFishArray.push_back(fish3);
-	Fish* fish4 = new Fish(glm::vec3(0, 0, 6), 1, glm::vec4(1, 1, 0, 1), "Fish 4");
-	m_axFishArray.push_back(fish4);
-
-	//create Sharks.
-	Shark* shark1 = new Shark(glm::vec3(0, 2, 0), 2, glm::vec4(0,1,1,1), "Shark 1");
-	m_axSharkArray.push_back(shark1);
-	Shark* shark2 = new Shark(glm::vec3(0, 4, 1), 2, glm::vec4(1,1,0,1), "Shark 2");
-	m_axSharkArray.push_back(shark2);
-	Shark* shark3 = new Shark(glm::vec3(0, 6, 2), 2, glm::vec4(1, 1, 1, 1), "Shark 3");
-	m_axSharkArray.push_back(shark3);
-	Shark* shark4 = new Shark(glm::vec3(0, 8, 3), 2, glm::vec4(0, 0, 0, 1), "Shark 4");
-	m_axSharkArray.push_back(shark4);
-
-	//Create Obstacles.
-	Obstacle* obstacle1 = new Obstacle(glm::vec3(0, 0, 50),  15, glm::vec4(1, 0, 0, 1), "Obstacle 1");
-	m_axObstacleArray.push_back(obstacle1);
-	Obstacle* obstacle2 = new Obstacle(glm::vec3(0, 50, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 2");
-	m_axObstacleArray.push_back(obstacle2);
-	Obstacle* obstacle3 = new Obstacle(glm::vec3(0, 0, -50), 15, glm::vec4(1, 0, 0, 1), "Obstacle 3");
-	m_axObstacleArray.push_back(obstacle3);
-	Obstacle* obstacle4 = new Obstacle(glm::vec3(0, -50, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 4");
-	m_axObstacleArray.push_back(obstacle4);
-	Obstacle* obstacle5 = new Obstacle(glm::vec3(50, 0, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 5");
-	m_axObstacleArray.push_back(obstacle5);
-	Obstacle* obstacle6 = new Obstacle(glm::vec3(-50, 0, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 6");
-	m_axObstacleArray.push_back(obstacle6);
+	//Create all the entities.
+	SetupEntities();
 
 	// create a world-space matrix for a camera
 	m_cameraMatrix = glm::inverse(glm::lookAt(glm::vec3(150, 150, 150), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
@@ -183,6 +152,35 @@ void aquarium::Draw()
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
 }
 
+void aquarium::SetupEntities()
+{
+	//Create Fish.
+	SpawnFish(glm::vec3(0, 0, 0), 1, glm::vec4(1, 1, 0, 1), "Fish 1");
+	SpawnFish(glm::vec3(0, 0, 2), 1, glm::vec4(1, 1, 0, 1), "Fish 2");
+	SpawnFish(glm::vec3(0, 0, 4), 1, glm::vec4(1, 1, 0, 1), "Fish 3");
+	SpawnFish(glm::vec3(0, 0, 6), 1, glm::vec4(1, 1, 0, 1), "Fish 4");
+
+	//create Sharks.
+	SpawnShark(glm::vec3(0, 2, 0), 2, glm::vec4(0, 1, 1, 1), "Shark 1");
+	SpawnShark(glm::vec3(0, 4, 1), 2, glm::vec4(1, 1, 0, 1), "Shark 2");
+	SpawnShark(glm::vec3(0, 6, 2), 2, glm::vec4(1, 1, 1, 1), "Shark 3");
+	SpawnShark(glm::vec3(0, 8, 3), 2, glm::vec4(0, 0, 0, 1), "Shark 4");
+
+	//Create Obstacles.
+	SpawnObstacle(glm::vec3(0, 0, 50), 15, glm::vec4(1, 0, 0, 1), "Obstacle 1");
+	SpawnObstacle(glm::vec3(0, 50, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 2");
+	SpawnObstacle(glm::vec3(0, 0, -50), 15, glm::vec4(1, 0, 0, 1), "Obstacle 3");
+	SpawnObstacle(glm::vec3(0, -50, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 4");
+	SpawnObstacle(glm::vec3(50, 0, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 5");
+	SpawnObstacle(glm::vec3(-50, 0, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 6");
+}
+
+void aquarium::ResetEntities()
+{ 
+	DestroyAllEntities();
+	SetupEntities();
+}
+
 void aquarium::SpawnFish(glm::vec3 a_v3Pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName)
 {
 	Fish* fish = new Fish(a_v3Pos, a_fLeaderness, a_colour, a_sName);
@@ -199,6 +197,11 @@ void aquarium::DestroyFish(Fish* a_fish)
 			m_axFishArray.erase(xIter);
 		}
 	}
+}
+
+void aquarium::DestroyAllFish()
+{
+	m_axFishArray.clear();
 }
 
 void aquarium::SpawnShark(glm::vec3 pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName)
@@ -219,6 +222,11 @@ void aquarium::DestroyShark(Shark* a_shark)
 	}
 }
 
+void aquarium::DestroyAllSharks()
+{
+	m_axSharkArray.clear();
+}
+
 void aquarium::SpawnObstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName)
 {
 	Obstacle* obstacle = new Obstacle(a_pos, a_radius, a_colour, a_sName);
@@ -235,6 +243,18 @@ void aquarium::DestroyObstacle(Obstacle* a_obstacle)
 			m_axObstacleArray.erase(xIter);
 		}
 	}
+}
+
+void aquarium::DestroyAllObstacles()
+{
+	m_axObstacleArray.clear();
+}
+
+void aquarium::DestroyAllEntities()
+{
+	DestroyAllFish();
+	DestroyAllSharks();
+	DestroyAllObstacles();
 }
 
 void aquarium::Destroy()

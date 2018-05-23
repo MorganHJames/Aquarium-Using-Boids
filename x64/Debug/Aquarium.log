@@ -1,2 +1,6 @@
-﻿  aquarium.cpp
+﻿  ModelComponent.cpp
+d:\documents\codingwork\year2\perforce\2017-2018\1602293\ct5037 programming high level architecture (sem2 - 201718)\aquarium\src\modelcomponent.cpp(50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  aquarium.cpp
+  main.cpp
+  Generating Code...
   Aquarium.vcxproj -> D:\Documents\CodingWork\Year2\Perforce\2017-2018\1602293\CT5037 Programming High Level Architecture (SEM2 - 201718)\Aquarium\x64\Debug\Aquarium.exe
