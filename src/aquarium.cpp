@@ -203,10 +203,10 @@ void aquarium::SetupEntities()
 	SpawnFish(glm::vec3(0, 0, 6), 1, glm::vec4(1, 1, 0, 1), "Fish 4");
 
 	//create Sharks.
-	SpawnShark(glm::vec3(0, 2, 0), 2, glm::vec4(0, 1, 1, 1), "Shark 1");
-	SpawnShark(glm::vec3(0, 4, 1), 2, glm::vec4(1, 1, 0, 1), "Shark 2");
-	SpawnShark(glm::vec3(0, 6, 2), 2, glm::vec4(1, 1, 1, 1), "Shark 3");
-	SpawnShark(glm::vec3(0, 8, 3), 2, glm::vec4(0, 0, 0, 1), "Shark 4");
+	SpawnShark(glm::vec3(0, 2, 0), 2, glm::vec4(0, 0, 1, 1), "Shark 1");
+	SpawnShark(glm::vec3(0, 4, 1), 2, glm::vec4(0, 0, 1, 1), "Shark 2");
+	SpawnShark(glm::vec3(0, 6, 2), 2, glm::vec4(0, 0, 1, 1), "Shark 3");
+	SpawnShark(glm::vec3(0, 8, 3), 2, glm::vec4(1, 0, 0, 1), "Shark 4");
 
 	//Create Obstacles.
 	SpawnObstacle(glm::vec3(0, 0, 50), 15, glm::vec4(1, 0, 0, 1), "Obstacle 1");

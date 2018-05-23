@@ -36,7 +36,7 @@ public:
 	float m_fWall_CHECK_DISTANCE = 1.0f;
 	float m_fINSTINCT_RANGE = 50.0f;
 	float m_fCOLOUR_CHANGE_AMOUNT = 0.001f;
-	float m_fCOLOUR_CHANGE_TIME = 0.001f;
+	float m_fCOLOUR_CHANGE_TIME = 0.0000001f;
 	float m_fCOLOUR_CHANGE_CURRENT_TIME = 0.1f;
 	int m_iLEADERNESS = 1;
 	bool m_bGizmos = false;

@@ -48,6 +48,7 @@ void BrainComponent::Update(float a_fDeltaTime)
 
 		glm::vec3 v3CurrentPos = pTransformComp->GetCurrentPosition();
 
+		//Adaptive color.
 		AdaptColour(a_fDeltaTime);
 
 		//Behavior Force Calculation
@@ -594,17 +595,15 @@ glm::vec4 BrainComponent::CalculateAverageColour()
 
 			if (glm::length(v4AverageColour) > 0.0f)
 			{
-				if (uNeighbourCount == 0)
+				v4AverageColour /= uNeighbourCount;
+				
+			}
+			else
+			{
+				ModelComponent* pLocalModel = static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL));
+				if (pLocalModel)
 				{
-					ModelComponent* pLocalModel = static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL));
-					if (pLocalModel)
-					{
-						v4AverageColour = pLocalModel->m_colour;
-					}
-				}
-				else
-				{
-					v4AverageColour /= uNeighbourCount;
+					v4AverageColour = pLocalModel->m_colour;
 				}
 			}
 
