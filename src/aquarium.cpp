@@ -14,6 +14,8 @@
 #include "Obstacle.h"
 #include "Fish.h"
 
+#include "imgui.h"
+
 // Framework includes
 
 #define DEFAULT_SCREENWIDTH 1280
@@ -118,6 +120,17 @@ void aquarium::Update(float a_deltaTime)
 		}
 	}
 
+#pragma region ImGui
+
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	static float f = 0.0f;
+	static int counter = 0;
+	ImGui::Begin("Spawn Entity");
+	ImGui::End();
+
+
+#pragma endregion
+
 	// quit our application when escape is pressed
 	if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		quit();
@@ -168,6 +181,60 @@ void aquarium::Draw()
 
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
+}
+
+void aquarium::SpawnFish(glm::vec3 a_v3Pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName)
+{
+	Fish* fish = new Fish(a_v3Pos, a_fLeaderness, a_colour, a_sName);
+	m_axFishArray.push_back(fish);
+}
+
+void aquarium::DestroyFish(Fish* a_fish)
+{
+	std::vector< Fish* >::iterator xIter;
+	for (xIter = m_axFishArray.begin(); xIter < m_axFishArray.end(); ++xIter)
+	{
+		if (*xIter == a_fish)
+		{
+			m_axFishArray.erase(xIter);
+		}
+	}
+}
+
+void aquarium::SpawnShark(glm::vec3 pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName)
+{
+	Shark* shark = new Shark(pos, a_fLeaderness, a_colour, a_sName);
+	m_axSharkArray.push_back(shark);
+}
+
+void aquarium::DestroyShark(Shark* a_shark)
+{
+	std::vector< Shark* >::iterator xIter;
+	for (xIter = m_axSharkArray.begin(); xIter < m_axSharkArray.end(); ++xIter)
+	{
+		if (*xIter == a_shark)
+		{
+			m_axSharkArray.erase(xIter);
+		}
+	}
+}
+
+void aquarium::SpawnObstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName)
+{
+	Obstacle* obstacle = new Obstacle(a_pos, a_radius, a_colour, a_sName);
+	m_axObstacleArray.push_back(obstacle);
+}
+
+void aquarium::DestroyObstacle(Obstacle* a_obstacle)
+{
+	std::vector< Obstacle* >::iterator xIter;
+	for (xIter = m_axObstacleArray.begin(); xIter < m_axObstacleArray.end(); ++xIter)
+	{
+		if (*xIter == a_obstacle)
+		{
+			m_axObstacleArray.erase(xIter);
+		}
+	}
 }
 
 void aquarium::Destroy()

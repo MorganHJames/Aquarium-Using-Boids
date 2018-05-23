@@ -98,7 +98,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)framework\include;$(ProjectDir)md5_loader\include;$(ProjectDir)include;$(ProjectDir)deps\glew-2.0.0\include;$(ProjectDir)deps\glfw\include\GLFW;$(ProjectDir)deps\glm;$(ProjectDir)deps\soil\include;$(ProjectDir)deps\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)framework\include;$(ProjectDir)md5_loader\include;$(ProjectDir)include;$(ProjectDir)deps\glew-2.0.0\include;$(ProjectDir)deps\glfw\include\GLFW;$(ProjectDir)deps\glm;$(ProjectDir)deps\soil\include;$(ProjectDir)deps\tinyxml;$(ProjectDir)deps\imgui\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>framework.lib;MD5_Loader.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -126,7 +126,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)framework\include;$(ProjectDir)md5_loader\include;$(ProjectDir)include;$(ProjectDir)deps\glew-2.0.0\include;$(ProjectDir)deps\glfw\include\GLFW;$(ProjectDir)deps\glm;$(ProjectDir)deps\soil\include;$(ProjectDir)deps\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)framework\include;$(ProjectDir)md5_loader\include;$(ProjectDir)include;$(ProjectDir)deps\glew-2.0.0\include;$(ProjectDir)deps\glfw\include\GLFW;$(ProjectDir)deps\glm;$(ProjectDir)deps\soil\include;$(ProjectDir)deps\tinyxml;$(ProjectDir)deps\imgui\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

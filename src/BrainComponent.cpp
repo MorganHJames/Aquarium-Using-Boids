@@ -584,7 +584,18 @@ glm::vec4 BrainComponent::CalculateAverageColour()
 
 			if (glm::length(v4AverageColour) > 0.0f)
 			{
-				v4AverageColour /= uNeighbourCount;
+				if (uNeighbourCount == 0)
+				{
+					ModelComponent* pLocalModel = static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL));
+					if (pLocalModel)
+					{
+						v4AverageColour = pLocalModel->m_colour;
+					}
+				}
+				else
+				{
+					v4AverageColour /= uNeighbourCount;
+				}
 			}
 
 		}
@@ -609,38 +620,40 @@ void BrainComponent::AdaptColour(float a_fDeltaTime)
 
 		//Change Color.
 		//Red
-		if (pModelComp->m_colour.x > CalculateAverageColour().x)
+		glm::vec4 v4AverageColour = CalculateAverageColour();
+
+		if (pModelComp->m_colour.x > v4AverageColour.x)
 		{
 			pModelComp->m_colour.x -= m_fCOLOUR_CHANGE_AMOUNT;
 		}
-		if (pModelComp->m_colour.x < CalculateAverageColour().x)
+		if (pModelComp->m_colour.x < v4AverageColour.x)
 		{
 			pModelComp->m_colour.x += m_fCOLOUR_CHANGE_AMOUNT;
 		}
 		//Green
-		if (pModelComp->m_colour.y > CalculateAverageColour().y)
+		if (pModelComp->m_colour.y > v4AverageColour.y)
 		{
 			pModelComp->m_colour.y -= m_fCOLOUR_CHANGE_AMOUNT;
 		}
-		if (pModelComp->m_colour.y < CalculateAverageColour().y)
+		if (pModelComp->m_colour.y < v4AverageColour.y)
 		{
 			pModelComp->m_colour.y += m_fCOLOUR_CHANGE_AMOUNT;
 		}
 		//Blue
-		if (pModelComp->m_colour.z > CalculateAverageColour().z)
+		if (pModelComp->m_colour.z > v4AverageColour.z)
 		{
 			pModelComp->m_colour.z -= m_fCOLOUR_CHANGE_AMOUNT;
 		}
-		if (pModelComp->m_colour.z < CalculateAverageColour().z)
+		if (pModelComp->m_colour.z < v4AverageColour.z)
 		{
 			pModelComp->m_colour.z += m_fCOLOUR_CHANGE_AMOUNT;
 		}
 		//Alpha
-		if (pModelComp->m_colour.w > CalculateAverageColour().w)
+		if (pModelComp->m_colour.w > v4AverageColour.w)
 		{
 			pModelComp->m_colour.w -= m_fCOLOUR_CHANGE_AMOUNT;
 		}
-		if (pModelComp->m_colour.w < CalculateAverageColour().w)
+		if (pModelComp->m_colour.w < v4AverageColour.w)
 		{
 			pModelComp->m_colour.w += m_fCOLOUR_CHANGE_AMOUNT;
 		}

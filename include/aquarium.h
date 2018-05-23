@@ -18,6 +18,15 @@ public:
 	aquarium();
 	~aquarium();
 
+	void SpawnFish(glm::vec3 a_v3Pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName);
+	void DestroyFish(Fish* a_fish);
+
+	void SpawnShark(glm::vec3 pos, float a_fLeaderness, glm::vec4 a_colour, std::string a_sName);
+	void DestroyShark(Shark* a_shark);
+
+	void SpawnObstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName);
+	void DestroyObstacle(Obstacle* a_obstacle);
+
 protected:
 	virtual bool onCreate();
 	virtual void Update(float a_deltaTime);
