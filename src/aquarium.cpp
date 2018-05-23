@@ -91,7 +91,7 @@ void aquarium::Update(float a_deltaTime)
 		}
 	}
 
-#pragma region ImGui
+#pragma region General Controls
 
 	ImGui::Begin("General Controls");
 
@@ -138,6 +138,29 @@ void aquarium::Update(float a_deltaTime)
 	if (ImGui::Button("Destroy All Entities"))
 	{
 		DestroyAllEntities();
+	}
+
+	ImGui::End();
+
+#pragma endregion
+
+#pragma region GUI
+
+	ImGui::Begin("Spawn");
+	//Fish
+	ImGui::Text("Fish");
+	
+	ImGui::InputText("Name", cstrFishNameBuffer, IM_ARRAYSIZE(cstrFishNameBuffer));
+	
+	sFishName = cstrFishNameBuffer;
+
+	//sliders for x y and z
+	
+	if (ImGui::Button("Spawn Fish"))
+	{
+	
+		SpawnFish(glm::vec3(0, 0, 0), 1, glm::vec4(1, 1, 0, 1), sFishName);
+	
 	}
 
 	ImGui::End();

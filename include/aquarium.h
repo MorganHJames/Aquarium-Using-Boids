@@ -48,8 +48,10 @@ private:
 	glm::vec4 m_lightPos;
 
 	bool m_bPaused = false;
-
 	std::string pauseName = "Pause";
+
+	std::string sFishName = "Fish";
+	char *cstrFishNameBuffer = &sFishName[0u];
 
 	void Pause();
 
