@@ -50,8 +50,26 @@ private:
 	bool m_bPaused = false;
 	std::string pauseName = "Pause";
 
-	std::string sFishName = "Fish";
+	//Fish Spawner
+	std::string sFishName = "Morgan";
 	char *cstrFishNameBuffer = &sFishName[0u];
+	glm::vec3 v3FishPosition;
+	int iFishLeaderness = 1;
+	float m_fFishColour[4];
+
+	//Shark Spawner
+	std::string sSharkName = "Henry";
+	char *cstrSharkNameBuffer = &sSharkName[0u];
+	glm::vec3 v3SharkPosition;
+	int iSharkLeaderness = 1;
+	float m_fSharkColour[4];
+
+	//Obstacle Spawner
+	std::string sObstacleName = "James";
+	char *cstrObstacleNameBuffer = &sObstacleName[0u];
+	glm::vec3 v3ObstaclePosition;
+	float iObstacleRadius = 1;
+	float m_fObstacleColour[4];
 
 	void Pause();
 

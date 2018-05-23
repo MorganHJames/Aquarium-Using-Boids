@@ -1,4 +1,5 @@
 #include "aquarium.h"
+#include "Constants.h"
 // Core includes
 #include <iostream>
 #include <time.h>
@@ -91,6 +92,9 @@ void aquarium::Update(float a_deltaTime)
 		}
 	}
 
+#pragma region GUI
+
+
 #pragma region General Controls
 
 	ImGui::Begin("General Controls");
@@ -109,30 +113,35 @@ void aquarium::Update(float a_deltaTime)
 
 		Pause();
 	}
-	
+	ImGui::SameLine(60);
+
 	//Reset
 	if (ImGui::Button("Reset"))
 	{
 		ResetEntities();
 	}
+	ImGui::SameLine(110);
 
 	//Destroy all fish
 	if (ImGui::Button("Destroy All Fish"))
 	{
 		DestroyAllFish();
 	}
+	ImGui::SameLine(240);
 
 	//Destroy all sharks
 	if (ImGui::Button("Destroy All Sharks"))
 	{
 		DestroyAllSharks();
 	}
+	ImGui::SameLine(385);
 
 	//Destroy all obstacles
 	if (ImGui::Button("Destroy All Obstacles"))
 	{
 		DestroyAllObstacles();
 	}
+	ImGui::SameLine(550);
 
 	//Destroy all entities
 	if (ImGui::Button("Destroy All Entities"))
@@ -144,26 +153,116 @@ void aquarium::Update(float a_deltaTime)
 
 #pragma endregion
 
-#pragma region GUI
+#pragma region Fish
+//Fish
+ImGui::Begin("Spawn Fish");
 
-	ImGui::Begin("Spawn");
-	//Fish
-	ImGui::Text("Fish");
-	
-	ImGui::InputText("Name", cstrFishNameBuffer, IM_ARRAYSIZE(cstrFishNameBuffer));
-	
-	sFishName = cstrFishNameBuffer;
+//Name
+ImGui::Text("Name");
+ImGui::InputText("Name", cstrFishNameBuffer, IM_ARRAYSIZE(cstrFishNameBuffer));
+sFishName = cstrFishNameBuffer;
+ImGui::NewLine();
 
-	//sliders for x y and z
-	
-	if (ImGui::Button("Spawn Fish"))
-	{
-	
-		SpawnFish(glm::vec3(0, 0, 0), 1, glm::vec4(1, 1, 0, 1), sFishName);
-	
-	}
+//Position
+ImGui::Text("Position");
+//sliders for x y and z
+ImGui::SliderFloat("x", &v3FishPosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("y", &v3FishPosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("z", &v3FishPosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::NewLine();
 
-	ImGui::End();
+//Leaderness
+ImGui::Text("Society Status");
+ImGui::SliderInt("leaderness", &iFishLeaderness, 1, 10);
+ImGui::NewLine();
+
+//Color
+ImGui::Text("Color");
+ImGui::ColorPicker4("Color", m_fFishColour);
+ImGui::NewLine();
+
+if (ImGui::Button("Spawn Fish", ImVec2(175,50)))
+{
+	SpawnFish(v3FishPosition, iFishLeaderness, glm::vec4(m_fFishColour[0], m_fFishColour[1], m_fFishColour[2], m_fFishColour[3]), sFishName);
+}
+
+ImGui::End();
+
+#pragma endregion
+
+#pragma region Shark
+//Shark
+ImGui::Begin("Spawn Shark");
+
+//Name
+ImGui::Text("Name");
+ImGui::InputText("Name", cstrSharkNameBuffer, IM_ARRAYSIZE(cstrSharkNameBuffer));
+sSharkName = cstrSharkNameBuffer;
+ImGui::NewLine();
+
+//Position
+ImGui::Text("Position");
+//sliders for x y and z
+ImGui::SliderFloat("x", &v3SharkPosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("y", &v3SharkPosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("z", &v3SharkPosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::NewLine();
+
+//Leaderness
+ImGui::Text("Society Status");
+ImGui::SliderInt("leaderness", &iSharkLeaderness, 1, 10);
+ImGui::NewLine();
+
+//Color
+ImGui::Text("Color");
+ImGui::ColorPicker4("Color", m_fSharkColour);
+ImGui::NewLine();
+
+if (ImGui::Button("Spawn Shark", ImVec2(175, 50)))
+{
+	SpawnShark(v3SharkPosition, iSharkLeaderness, glm::vec4(m_fSharkColour[0], m_fSharkColour[1], m_fSharkColour[2], m_fSharkColour[3]), sSharkName);
+}
+
+ImGui::End();
+
+#pragma endregion
+
+#pragma region Obstacle
+//Obstacle
+ImGui::Begin("Spawn Obstacle");
+
+//Name
+ImGui::Text("Name");
+ImGui::InputText("Name", cstrObstacleNameBuffer, IM_ARRAYSIZE(cstrObstacleNameBuffer));
+sObstacleName = cstrObstacleNameBuffer;
+ImGui::NewLine();
+
+//Position
+ImGui::Text("Position");
+//sliders for x y and z
+ImGui::SliderFloat("x", &v3ObstaclePosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("y", &v3ObstaclePosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("z", &v3ObstaclePosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::NewLine();
+
+//Size
+ImGui::Text("Size");
+ImGui::SliderFloat("Radius", &iObstacleRadius, 0.01f, 100.0f);
+ImGui::NewLine();
+
+//Color
+ImGui::Text("Color");
+ImGui::ColorPicker4("Color", m_fObstacleColour);
+ImGui::NewLine();
+
+if (ImGui::Button("Spawn Obstacle", ImVec2(175, 50)))
+{
+	SpawnObstacle(v3ObstaclePosition, iObstacleRadius, glm::vec4(m_fObstacleColour[0], m_fObstacleColour[1], m_fObstacleColour[2], m_fObstacleColour[3]), sObstacleName);
+}
+
+ImGui::End();
+
+#pragma endregion
 
 #pragma endregion
 

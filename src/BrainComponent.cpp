@@ -593,7 +593,7 @@ glm::vec4 BrainComponent::CalculateAverageColour()
 				}
 			}
 
-			if (glm::length(v4AverageColour) > 0.0f)
+			if (glm::length(v4AverageColour) > 0.0f && uNeighbourCount > 0)
 			{
 				v4AverageColour /= uNeighbourCount;
 				
