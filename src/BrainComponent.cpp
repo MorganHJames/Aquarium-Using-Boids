@@ -13,8 +13,8 @@
 
 typedef Component PARENT;
 
-BrainComponent::BrainComponent(Entity* pOwnerEntity, int a_iLeaderness)
-	: PARENT(pOwnerEntity),
+BrainComponent::BrainComponent(Entity* a_pOwnerEntity, int a_iLeaderness)
+	: PARENT(a_pOwnerEntity),
 	m_v3CurrentVelocity(0.f,0.f,0.f),
 	m_eCurrentBehaviour(WANDER)
 {
@@ -105,67 +105,67 @@ void BrainComponent::Update(float a_fDeltaTime)
 	}
 }
 
-void BrainComponent::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
+void BrainComponent::Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO)
 {
 
 }
 
-glm::vec3 BrainComponent::CalculateSeekForce(const glm::vec3& v3Target, const glm::vec3& v3CurrentPos) const
+glm::vec3 BrainComponent::CalculateSeekForce(const glm::vec3& a_v3Target, const glm::vec3& a_v3CurrentPos) const
 {
 	//Apply force
-	glm::vec3 v3TargetDir = glm::normalize(v3Target - v3CurrentPos);
+	glm::vec3 v3TargetDir = glm::normalize(a_v3Target - a_v3CurrentPos);
 	glm::vec3 v3NewVelocity = v3TargetDir * m_fMAX_SPEED;
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
 	//Add gizmos
 	if (m_bGizmos)
 	{
-		Gizmos::addCircle(v3Target, 2, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
-		Gizmos::addLine(v3CurrentPos, v3Target, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+		Gizmos::addCircle(a_v3Target, 2, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+		Gizmos::addLine(a_v3CurrentPos, a_v3Target, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
 	}
 
 	return v3Force;
 }
 
-glm::vec3 BrainComponent::CalculatePursuitForce(Entity* a_target, const glm::vec3& v3CurrentPos) const
+glm::vec3 BrainComponent::CalculatePursuitForce(Entity* a_pTarget, const glm::vec3& a_v3CurrentPos) const
 {
-	TransformComponent* aTransform = static_cast<TransformComponent*>(a_target->FindComponentOfType(TRANSFORM));
-	BrainComponent* aBrain = static_cast<BrainComponent*>(a_target->FindComponentOfType(BRAIN));
-	glm::vec3 distance = aTransform->GetCurrentPosition() - v3CurrentPos;
+	TransformComponent* aTransform = static_cast<TransformComponent*>(a_pTarget->FindComponentOfType(TRANSFORM));
+	BrainComponent* aBrain = static_cast<BrainComponent*>(a_pTarget->FindComponentOfType(BRAIN));
+	glm::vec3 distance = aTransform->GetCurrentPosition() - a_v3CurrentPos;
 	float updatesAhead = distance.length() / m_fMAX_SPEED;
 	glm::vec3 futurePosition = aTransform->GetCurrentPosition() + aBrain->GetCurrentVelocity() * updatesAhead;
-	return CalculateSeekForce(futurePosition, v3CurrentPos);
+	return CalculateSeekForce(futurePosition, a_v3CurrentPos);
 }
 
-glm::vec3 BrainComponent::CalculateFleeForce(const glm::vec3& v3Target, const glm::vec3& v3CurrentPos) const
+glm::vec3 BrainComponent::CalculateFleeForce(const glm::vec3& a_v3Target, const glm::vec3& a_v3CurrentPos) const
 {
 	//Apply force
-	glm::vec3 v3TargetDir = glm::normalize(v3CurrentPos - v3Target);
+	glm::vec3 v3TargetDir = glm::normalize(a_v3CurrentPos - a_v3Target);
 	glm::vec3 v3NewVelocity = v3TargetDir * m_fMAX_SPEED;
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
 	//Add gizmos
 	if (m_bGizmos)
 	{
-		Gizmos::addCircle(v3Target, 2, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
-		Gizmos::addLine(v3CurrentPos, v3Target, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+		Gizmos::addCircle(a_v3Target, 2, 16, false, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
+		Gizmos::addLine(a_v3CurrentPos, a_v3Target, glm::vec4(0.f, 0.8f, 0.3f, 1.0f));
 	}
 	return v3Force;
 }
 
-glm::vec3 BrainComponent::CalculateEvadeForce(Entity* a_target, const glm::vec3& v3CurrentPos) const
+glm::vec3 BrainComponent::CalculateEvadeForce(Entity* a_pTarget, const glm::vec3& a_v3CurrentPos) const
 {
-	TransformComponent* aTransform = static_cast<TransformComponent*>(a_target->FindComponentOfType(TRANSFORM));
-	BrainComponent* aBrain = static_cast<BrainComponent*>(a_target->FindComponentOfType(BRAIN));
-	glm::vec3 distance = aTransform->GetCurrentPosition() - v3CurrentPos;
+	TransformComponent* aTransform = static_cast<TransformComponent*>(a_pTarget->FindComponentOfType(TRANSFORM));
+	BrainComponent* aBrain = static_cast<BrainComponent*>(a_pTarget->FindComponentOfType(BRAIN));
+	glm::vec3 distance = aTransform->GetCurrentPosition() - a_v3CurrentPos;
 	float updatesAhead = distance.length() / m_fMAX_SPEED;
 	glm::vec3 futurePosition = aTransform->GetCurrentPosition() + aBrain->GetCurrentVelocity() * updatesAhead; 
-	return CalculateFleeForce(futurePosition, v3CurrentPos);
+	return CalculateFleeForce(futurePosition, a_v3CurrentPos);
 }
 
-glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& v3CurrentPos, const glm::vec3& v3Forward)
+glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& a_v3CurrentPos, const glm::vec3& a_v3Forward)
 {
-	glm::vec3 v3WanderSphereOrigin = v3CurrentPos + (v3Forward * m_fSPHERE_FORWARD_MULTIPLIER);
+	glm::vec3 v3WanderSphereOrigin = a_v3CurrentPos + (a_v3Forward * m_fSPHERE_FORWARD_MULTIPLIER);
 	glm::vec3 v3RandPoint = glm::sphericalRand(m_fWANDER_RADIUS);
 	glm::vec3 v3RandPointInSphere = v3WanderSphereOrigin + v3RandPoint;
 
@@ -180,14 +180,14 @@ glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& v3CurrentPos, co
 
 	
 	//Apply force eqquation
-	glm::vec3 v3TargetDir = glm::normalize(v3Target - v3CurrentPos);
+	glm::vec3 v3TargetDir = glm::normalize(v3Target - a_v3CurrentPos);
 	glm::vec3 v3NewVelocity = v3TargetDir * m_fMAX_SPEED;
 	glm::vec3 v3Force = v3NewVelocity - m_v3CurrentVelocity;
 
 	//Add gizmos
 	if (m_bGizmos)
 	{
-		Gizmos::addLine(v3CurrentPos, v3WanderSphereOrigin, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+		Gizmos::addLine(a_v3CurrentPos, v3WanderSphereOrigin, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 		Gizmos::addLine(v3WanderSphereOrigin, v3RandPointInSphere, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		Gizmos::addLine(v3RandPointInSphere, v3RandTargetVec, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 		Gizmos::addLine(v3WanderSphereOrigin, v3Target, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -196,7 +196,7 @@ glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& v3CurrentPos, co
 	return v3Force;
 }
 
-glm::vec3 BrainComponent::CalculateInstinctForce(glm::vec3& v3CurrentPos)
+glm::vec3 BrainComponent::CalculateInstinctForce(glm::vec3& a_v3CurrentPos)
 {
 	glm::vec3 v3InstinctForce(0.0f, 0.0f, 0.0f);
 	//If shark and fish is close pursue fish
@@ -212,7 +212,7 @@ glm::vec3 BrainComponent::CalculateInstinctForce(glm::vec3& v3CurrentPos)
 		{
 			Entity* pTarget = xIter->second;
 			//not same and not obstacle
-			if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_model != static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_model != OBSTACLE)
+			if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_eModel != static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_eModel && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_eModel != OBSTACLE)
 			{
 				TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
 				
@@ -222,8 +222,8 @@ glm::vec3 BrainComponent::CalculateInstinctForce(glm::vec3& v3CurrentPos)
 					{
 						TransformComponent* pClosestTargetTransform = static_cast<TransformComponent*>(pClosest->FindComponentOfType(TRANSFORM));
 						glm::vec3 v3TargetPos = pTargetTransform->GetCurrentPosition();
-						float fDistanceBetween = glm::length(v3CurrentPos - v3TargetPos);
-						float fDistanceBetweenClosest = glm::length(v3CurrentPos - pClosestTargetTransform->GetCurrentPosition());
+						float fDistanceBetween = glm::length(a_v3CurrentPos - v3TargetPos);
+						float fDistanceBetweenClosest = glm::length(a_v3CurrentPos - pClosestTargetTransform->GetCurrentPosition());
 
 						if (fDistanceBetween < fDistanceBetweenClosest)
 						{
@@ -243,23 +243,23 @@ glm::vec3 BrainComponent::CalculateInstinctForce(glm::vec3& v3CurrentPos)
 			TransformComponent* pClosestTargetTransform = static_cast<TransformComponent*>(pClosest->FindComponentOfType(TRANSFORM));
 			if (pClosestTargetTransform)
 			{
-				float fDistanceBetweenClosest = glm::length(v3CurrentPos - pClosestTargetTransform->GetCurrentPosition());
+				float fDistanceBetweenClosest = glm::length(a_v3CurrentPos - pClosestTargetTransform->GetCurrentPosition());
 				if (fDistanceBetweenClosest < m_fINSTINCT_RANGE)
 				{
-					if (static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model == FISH)
+					if (static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_eModel == FISH)
 					{
-						v3InstinctForce += CalculateEvadeForce(pClosest, v3CurrentPos);
+						v3InstinctForce += CalculateEvadeForce(pClosest, a_v3CurrentPos);
 
 						if (fDistanceBetweenClosest < 1)
 						{
-							v3CurrentPos.x = glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE);
-							v3CurrentPos.y = glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE);
-							v3CurrentPos.z = glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE);
+							a_v3CurrentPos.x = glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE);
+							a_v3CurrentPos.y = glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE);
+							a_v3CurrentPos.z = glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE);
 						}
 					}
-					if (static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model == SHARK)
+					if (static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_eModel == SHARK)
 					{
-						v3InstinctForce += CalculatePursuitForce(pClosest, v3CurrentPos);
+						v3InstinctForce += CalculatePursuitForce(pClosest, a_v3CurrentPos);
 					}
 				}
 			}
@@ -268,44 +268,44 @@ glm::vec3 BrainComponent::CalculateInstinctForce(glm::vec3& v3CurrentPos)
 	return v3InstinctForce;
 }
 
-glm::vec3 BrainComponent::CalculateContainmentForce(const glm::vec3& v3CurrentPos)
+glm::vec3 BrainComponent::CalculateContainmentForce(const glm::vec3& a_v3CurrentPos)
 {
 	glm::vec3 v3ContainmentForce(0.0f, 0.0f, 0.0f);
 
 	//right wall
-	if (glm::distance(v3CurrentPos, glm::vec3(g_fHALF_AQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
+	if (glm::distance(a_v3CurrentPos, glm::vec3(g_fHALF_AQUARIUM_SIZE, a_v3CurrentPos.y, a_v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
 	{
-		v3ContainmentForce += CalculateFleeForce(glm::vec3(g_fHALF_AQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z), v3CurrentPos);
+		v3ContainmentForce += CalculateFleeForce(glm::vec3(g_fHALF_AQUARIUM_SIZE, a_v3CurrentPos.y, a_v3CurrentPos.z), a_v3CurrentPos);
 	}
 
 	//left wall
-	if (glm::distance(v3CurrentPos, glm::vec3(-g_fAQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
+	if (glm::distance(a_v3CurrentPos, glm::vec3(-g_fAQUARIUM_SIZE, a_v3CurrentPos.y, a_v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
 	{
-		v3ContainmentForce += CalculateFleeForce(glm::vec3(-g_fAQUARIUM_SIZE, v3CurrentPos.y, v3CurrentPos.z), v3CurrentPos);
+		v3ContainmentForce += CalculateFleeForce(glm::vec3(-g_fAQUARIUM_SIZE, a_v3CurrentPos.y, a_v3CurrentPos.z), a_v3CurrentPos);
 	}
 
 	//top wall
-	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, g_fAQUARIUM_SIZE, v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
+	if (glm::distance(a_v3CurrentPos, glm::vec3(a_v3CurrentPos.x, g_fAQUARIUM_SIZE, a_v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
 	{
-		v3ContainmentForce += CalculateFleeForce(glm::vec3(v3CurrentPos.x, g_fAQUARIUM_SIZE, v3CurrentPos.z), v3CurrentPos);
+		v3ContainmentForce += CalculateFleeForce(glm::vec3(a_v3CurrentPos.x, g_fAQUARIUM_SIZE, a_v3CurrentPos.z), a_v3CurrentPos);
 	}
 
 	//bottom wall
-	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, -g_fAQUARIUM_SIZE, v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
+	if (glm::distance(a_v3CurrentPos, glm::vec3(a_v3CurrentPos.x, -g_fAQUARIUM_SIZE, a_v3CurrentPos.z)) < m_fWall_CHECK_DISTANCE)
 	{
-		v3ContainmentForce += CalculateFleeForce(glm::vec3(v3CurrentPos.x, -g_fAQUARIUM_SIZE, v3CurrentPos.z), v3CurrentPos);
+		v3ContainmentForce += CalculateFleeForce(glm::vec3(a_v3CurrentPos.x, -g_fAQUARIUM_SIZE, a_v3CurrentPos.z), a_v3CurrentPos);
 	}
 
 	//front wall
-	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, v3CurrentPos.y, g_fAQUARIUM_SIZE)) < m_fWall_CHECK_DISTANCE)
+	if (glm::distance(a_v3CurrentPos, glm::vec3(a_v3CurrentPos.x, a_v3CurrentPos.y, g_fAQUARIUM_SIZE)) < m_fWall_CHECK_DISTANCE)
 	{
-		v3ContainmentForce += CalculateFleeForce(glm::vec3(v3CurrentPos.x, v3CurrentPos.y, g_fAQUARIUM_SIZE), v3CurrentPos);
+		v3ContainmentForce += CalculateFleeForce(glm::vec3(a_v3CurrentPos.x, a_v3CurrentPos.y, g_fAQUARIUM_SIZE), a_v3CurrentPos);
 	}
 
 	//back wall
-	if (glm::distance(v3CurrentPos, glm::vec3(v3CurrentPos.x, v3CurrentPos.y, -g_fAQUARIUM_SIZE)) < m_fWall_CHECK_DISTANCE)
+	if (glm::distance(a_v3CurrentPos, glm::vec3(a_v3CurrentPos.x, a_v3CurrentPos.y, -g_fAQUARIUM_SIZE)) < m_fWall_CHECK_DISTANCE)
 	{
-		v3ContainmentForce += CalculateFleeForce(glm::vec3(v3CurrentPos.x, v3CurrentPos.y, -g_fAQUARIUM_SIZE), v3CurrentPos);
+		v3ContainmentForce += CalculateFleeForce(glm::vec3(a_v3CurrentPos.x, a_v3CurrentPos.y, -g_fAQUARIUM_SIZE), a_v3CurrentPos);
 	}
 
 	return v3ContainmentForce;
@@ -328,7 +328,7 @@ glm::vec3 BrainComponent::CalculateSeperationForce()
 			for (xIter = xEntityMap.begin(); xIter != xEntityMap.end(); ++xIter)
 			{
 				Entity* pTarget = xIter->second;
-				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_model == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model)
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_eModel == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_eModel)
 				{
 					TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
 					if (pTargetTransform)
@@ -370,7 +370,7 @@ glm::vec3 BrainComponent::CalculateAlignmentForce()
 			for (xIter = xEntityMap.begin(); xIter != xEntityMap.end(); ++xIter)
 			{
 				Entity* pTarget = xIter->second;
-				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_model == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model)
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_eModel == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_eModel)
 				{
 					TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
 					BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTarget->FindComponentOfType(BRAIN));
@@ -421,7 +421,7 @@ glm::vec3 BrainComponent::CalculateCohesionForce()
 			for (xIter = xEntityMap.begin(); xIter != xEntityMap.end(); ++xIter)
 			{
 				Entity* pTarget = xIter->second;
-				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_model == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model)
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_eModel == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_eModel)
 				{
 					TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
 					
@@ -494,23 +494,23 @@ glm::vec3 BrainComponent::CalculateCollisionAvoidanceForce()
 	return v3CollisionAvoidanceForce;
 }
 
-float BrainComponent::Distance(glm::vec3 a_A, glm::vec3 a_B)
+float BrainComponent::Distance(glm::vec3 a_v3A, glm::vec3 a_v3B)
 {
 	return (float)sqrt(
-		  pow((a_B.x - a_A.x), 2)
-		+ pow((a_B.y - a_A.y), 2)
-		+ pow((a_B.z - a_A.z), 2));
+		  pow((a_v3B.x - a_v3A.x), 2)
+		+ pow((a_v3B.y - a_v3A.y), 2)
+		+ pow((a_v3B.z - a_v3A.z), 2));
 }
 
-bool BrainComponent::LineIntersectsSphere(glm::vec3 a_ahead, glm::vec3 a_ahead2, Entity* a_Obstacle)
+bool BrainComponent::LineIntersectsSphere(glm::vec3 a_v3Ahead, glm::vec3 a_v3Ahead2, Entity* a_pObstacle)
 {
-	ModelComponent* aModel = static_cast<ModelComponent*>(a_Obstacle->FindComponentOfType(MODEL));
-	TransformComponent* aTransform = static_cast<TransformComponent*>(a_Obstacle->FindComponentOfType(TRANSFORM));
+	ModelComponent* aModel = static_cast<ModelComponent*>(a_pObstacle->FindComponentOfType(MODEL));
+	TransformComponent* aTransform = static_cast<TransformComponent*>(a_pObstacle->FindComponentOfType(TRANSFORM));
 	float radius = aModel->m_fRadius;
-	return Distance(aTransform->GetCurrentPosition(), a_ahead) <= radius || Distance(aTransform->GetCurrentPosition(), a_ahead2) <= radius;
+	return Distance(aTransform->GetCurrentPosition(), a_v3Ahead) <= radius || Distance(aTransform->GetCurrentPosition(), a_v3Ahead2) <= radius;
 }
 
-Entity* BrainComponent::FindMostThreateningObstacle(glm::vec3 a_ahead, glm::vec3 a_ahead2)
+Entity* BrainComponent::FindMostThreateningObstacle(glm::vec3 a_v3Ahead, glm::vec3 a_v3Ahead2)
 {
 	Entity* mostThreatening = nullptr;
 
@@ -528,9 +528,9 @@ Entity* BrainComponent::FindMostThreateningObstacle(glm::vec3 a_ahead, glm::vec3
 			{
 				Entity* pTarget = xIter->second;
 
-				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_model == OBSTACLE)
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_eModel == OBSTACLE)
 				{
-					bool collision = LineIntersectsSphere(a_ahead, a_ahead2, pTarget);
+					bool collision = LineIntersectsSphere(a_v3Ahead, a_v3Ahead2, pTarget);
 	
 					TransformComponent* aTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
 					
@@ -574,7 +574,7 @@ glm::vec4 BrainComponent::CalculateAverageColour()
 			for (xIter = xEntityMap.begin(); xIter != xEntityMap.end(); ++xIter)
 			{
 				Entity* pTarget = xIter->second;
-				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_model == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_model)
+				if (pTarget && pTarget->GetEntityID() != GetOwnerEntity()->GetEntityID() && static_cast<ModelComponent*>(pTarget->FindComponentOfType(MODEL))->m_eModel == static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL))->m_eModel)
 				{
 					TransformComponent* pTargetTransform = static_cast<TransformComponent*>(pTarget->FindComponentOfType(TRANSFORM));
 					BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTarget->FindComponentOfType(BRAIN));
@@ -590,7 +590,7 @@ glm::vec4 BrainComponent::CalculateAverageColour()
 							{
 								for (int i = 0; i < pTargetBrain->m_iLEADERNESS; ++i)
 								{
-									v4AverageColour += pTargetModel->m_colour;
+									v4AverageColour += pTargetModel->m_v4Colour;
 									uNeighbourCount++;
 								}
 							}
@@ -609,7 +609,7 @@ glm::vec4 BrainComponent::CalculateAverageColour()
 				ModelComponent* pLocalModel = static_cast<ModelComponent*>(GetOwnerEntity()->FindComponentOfType(MODEL));
 				if (pLocalModel)
 				{
-					v4AverageColour = pLocalModel->m_colour;
+					v4AverageColour = pLocalModel->m_v4Colour;
 				}
 			}
 
@@ -637,40 +637,40 @@ void BrainComponent::AdaptColour(float a_fDeltaTime)
 		//Red
 		glm::vec4 v4AverageColour = CalculateAverageColour();
 
-		if (pModelComp->m_colour.x > v4AverageColour.x)
+		if (pModelComp->m_v4Colour.x > v4AverageColour.x)
 		{
-			pModelComp->m_colour.x -= m_fCOLOUR_CHANGE_AMOUNT;
+			pModelComp->m_v4Colour.x -= m_fCOLOUR_CHANGE_AMOUNT;
 		}
-		if (pModelComp->m_colour.x < v4AverageColour.x)
+		if (pModelComp->m_v4Colour.x < v4AverageColour.x)
 		{
-			pModelComp->m_colour.x += m_fCOLOUR_CHANGE_AMOUNT;
+			pModelComp->m_v4Colour.x += m_fCOLOUR_CHANGE_AMOUNT;
 		}
 		//Green
-		if (pModelComp->m_colour.y > v4AverageColour.y)
+		if (pModelComp->m_v4Colour.y > v4AverageColour.y)
 		{
-			pModelComp->m_colour.y -= m_fCOLOUR_CHANGE_AMOUNT;
+			pModelComp->m_v4Colour.y -= m_fCOLOUR_CHANGE_AMOUNT;
 		}
-		if (pModelComp->m_colour.y < v4AverageColour.y)
+		if (pModelComp->m_v4Colour.y < v4AverageColour.y)
 		{
-			pModelComp->m_colour.y += m_fCOLOUR_CHANGE_AMOUNT;
+			pModelComp->m_v4Colour.y += m_fCOLOUR_CHANGE_AMOUNT;
 		}
 		//Blue
-		if (pModelComp->m_colour.z > v4AverageColour.z)
+		if (pModelComp->m_v4Colour.z > v4AverageColour.z)
 		{
-			pModelComp->m_colour.z -= m_fCOLOUR_CHANGE_AMOUNT;
+			pModelComp->m_v4Colour.z -= m_fCOLOUR_CHANGE_AMOUNT;
 		}
-		if (pModelComp->m_colour.z < v4AverageColour.z)
+		if (pModelComp->m_v4Colour.z < v4AverageColour.z)
 		{
-			pModelComp->m_colour.z += m_fCOLOUR_CHANGE_AMOUNT;
+			pModelComp->m_v4Colour.z += m_fCOLOUR_CHANGE_AMOUNT;
 		}
 		//Alpha
-		if (pModelComp->m_colour.w > v4AverageColour.w)
+		if (pModelComp->m_v4Colour.w > v4AverageColour.w)
 		{
-			pModelComp->m_colour.w -= m_fCOLOUR_CHANGE_AMOUNT;
+			pModelComp->m_v4Colour.w -= m_fCOLOUR_CHANGE_AMOUNT;
 		}
-		if (pModelComp->m_colour.w < v4AverageColour.w)
+		if (pModelComp->m_v4Colour.w < v4AverageColour.w)
 		{
-			pModelComp->m_colour.w += m_fCOLOUR_CHANGE_AMOUNT;
+			pModelComp->m_v4Colour.w += m_fCOLOUR_CHANGE_AMOUNT;
 		}
 		m_fCOLOUR_CHANGE_CURRENT_TIME = m_fCOLOUR_CHANGE_TIME;
 	}

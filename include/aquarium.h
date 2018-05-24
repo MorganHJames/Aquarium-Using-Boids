@@ -55,27 +55,27 @@ private:
 	glm::vec4 m_lightPos;
 
 	bool m_bPaused = false;
-	std::string pauseName = "Pause";
+	std::string m_sPauseName = "Pause";
 
 	//Fish Spawner
-	std::string sFishName = "Morgan";
-	char *cstrFishNameBuffer = &sFishName[0u];
-	glm::vec3 v3FishPosition;
-	int iFishLeaderness = 1;
+	std::string m_sFishName = "Morgan";
+	char *m_cstrFishNameBuffer = &m_sFishName[0u];
+	glm::vec3 m_v3FishPosition;
+	int m_iFishLeaderness = 1;
 	float m_fFishColour[4];
 
 	//Shark Spawner
-	std::string sSharkName = "Henry";
-	char *cstrSharkNameBuffer = &sSharkName[0u];
-	glm::vec3 v3SharkPosition;
-	int iSharkLeaderness = 1;
+	std::string m_sSharkName = "Henry";
+	char *m_cstrSharkNameBuffer = &m_sSharkName[0u];
+	glm::vec3 m_v3SharkPosition;
+	int m_iSharkLeaderness = 1;
 	float m_fSharkColour[4];
 
 	//Obstacle Spawner
-	std::string sObstacleName = "James";
-	char *cstrObstacleNameBuffer = &sObstacleName[0u];
-	glm::vec3 v3ObstaclePosition;
-	float iObstacleRadius = 1;
+	std::string m_sObstacleName = "James";
+	char *m_cstrObstacleNameBuffer = &m_sObstacleName[0u];
+	glm::vec3 m_v3ObstaclePosition;
+	float m_iObstacleRadius = 1;
 	float m_fObstacleColour[4];
 
 	//Fish Behavior
@@ -118,9 +118,9 @@ private:
 	float m_fSharkCollisionAvoidanceForce = 10.0f;
 	float m_fSharkContainmentForce = 100.0f;
 
-	Entity* pSelectedFishEntity = nullptr;
-	Entity* pSelectedSharkEntity = nullptr;
-	Entity* pSelectedObstacleEntity = nullptr;
+	Entity* m_pSelectedFishEntity = nullptr;
+	Entity* m_pSelectedSharkEntity = nullptr;
+	Entity* m_pSelectedObstacleEntity = nullptr;
 	bool m_bFreeLook = true;
 
 	float m_fSelectedFishColour[4];
@@ -132,13 +132,13 @@ private:
 	void SetupEntities();
 	void ResetEntities();
 
-	void SpawnFish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName);
+	void SpawnFish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_v4Colour, std::string a_sName);
 	void DestroyAllFish();
 
-	void SpawnShark(glm::vec3 pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName);
+	void SpawnShark(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_v4Colour, std::string a_sName);
 	void DestroyAllSharks();
 
-	void SpawnObstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName);
+	void SpawnObstacle(glm::vec3 a_v3Pos, float a_fRadius, glm::vec4 a_v4Colour, std::string a_sName);
 	void DestroyAllObstacles();
 
 	void DestroyAllEntities();

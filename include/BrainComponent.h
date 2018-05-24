@@ -22,11 +22,11 @@ enum BEHAVIOUR_TYPE
 class BrainComponent : public Component
 {
 public:
-	BrainComponent(Entity* pOwnerEntity, int a_iLeaderness);
+	BrainComponent(Entity* a_pOwnerEntity, int a_iLeaderness);
 	~BrainComponent();
 
 	virtual void Update(float a_fDeltaTime);
-	virtual void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_IBO);
+	virtual void Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO);
 
 	inline glm::vec3 GetCurrentVelocity() const
 	{
@@ -58,25 +58,25 @@ public:
 
 private:
 	//Steering behaviors.
-	glm::vec3 CalculateSeekForce(const glm::vec3& v3Target, const glm::vec3& v3CurrentPos) const;
-	glm::vec3 CalculatePursuitForce(Entity* a_target, const glm::vec3& v3CurrentPos) const;
+	glm::vec3 CalculateSeekForce(const glm::vec3& a_v3Target, const glm::vec3& a_v3CurrentPos) const;
+	glm::vec3 CalculatePursuitForce(Entity* a_pTarget, const glm::vec3& a_v3CurrentPos) const;
 
-	glm::vec3 CalculateFleeForce(const glm::vec3& v3Target, const glm::vec3& v3CurrentPos) const;
-	glm::vec3 CalculateEvadeForce(Entity* a_target, const glm::vec3& v3CurrentPos) const;
+	glm::vec3 CalculateFleeForce(const glm::vec3& a_v3Target, const glm::vec3& a_v3CurrentPos) const;
+	glm::vec3 CalculateEvadeForce(Entity* a_pTarget, const glm::vec3& a_v3CurrentPos) const;
 
-	glm::vec3 CalculateWanderForce(const glm::vec3& v3CurrentPos, const glm::vec3& v3Forward);
+	glm::vec3 CalculateWanderForce(const glm::vec3& a_v3CurrentPos, const glm::vec3& a_v3Forward);
 
-	glm::vec3 CalculateInstinctForce(glm::vec3& v3CurrentPos);
+	glm::vec3 CalculateInstinctForce(glm::vec3& a_v3CurrentPos);
 
-	glm::vec3 CalculateContainmentForce(const glm::vec3& v3CurrentPos);
+	glm::vec3 CalculateContainmentForce(const glm::vec3& a_v3CurrentPos);
 
 	//Collision Avoidance
 	glm::vec3 CalculateCollisionAvoidanceForce();
 
 	//Helper Functions.
-	float Distance(glm::vec3 a_A, glm::vec3 a_B);
-	bool LineIntersectsSphere(glm::vec3 a_ahead, glm::vec3 a_ahead2, Entity* a_Obstacle);
-	Entity* FindMostThreateningObstacle(glm::vec3 a_ahead, glm::vec3 a_ahead2);
+	float Distance(glm::vec3 a_v3A, glm::vec3 a_v3B);
+	bool LineIntersectsSphere(glm::vec3 a_v3Ahead, glm::vec3 a_v3Ahead2, Entity* a_obstacle);
+	Entity* FindMostThreateningObstacle(glm::vec3 a_v3Ahead, glm::vec3 a_v3Ahead2);
 
 	//Color Adaption.
 	void AdaptColour(float a_fDeltaTime);

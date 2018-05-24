@@ -14,13 +14,13 @@
 class Obstacle : public Entity
 {
 public:
-	Obstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName);
+	Obstacle(glm::vec3 a_v3Pos, float a_fRadius, glm::vec4 a_v4Colour, std::string a_sName);
 	~Obstacle();
 	
 	float m_size = 1;
 
 	virtual void Update(float a_fDeltaTime);
-	void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO);
+	void Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO);
 };
 
 #endif//_OBSTACLE_H

@@ -11,10 +11,10 @@
 
 typedef Entity PARENT;
 
-Shark::Shark(glm::vec3 pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName)
+Shark::Shark(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_v4Colour, std::string a_sName)
 {
-	AddComponent(new ModelComponent(this, SHARK, a_colour, 0.0f));
-	AddComponent(new TransformComponent(this, pos, a_sName));
+	AddComponent(new ModelComponent(this, SHARK, a_v4Colour, 0.0f));
+	AddComponent(new TransformComponent(this, a_v3Pos, a_sName));
 	AddComponent(new BrainComponent(this, a_iLeaderness));
 }
 
@@ -27,7 +27,7 @@ void Shark::Update(float a_fDeltaTime)
 	PARENT::Update(a_fDeltaTime);
 }
 
-void Shark::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
+void Shark::Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO)
 {
-	PARENT::Draw(a_uProgramID, a_uVBO, a_uIBO);
+	PARENT::Draw(a_uiProgramID, a_uiVBO, a_uiIBO);
 }

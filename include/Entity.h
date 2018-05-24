@@ -15,8 +15,8 @@
 class Entity
 {
 private:
-	const unsigned int m_uEntityID;
-	static unsigned int s_uEntityIDCount;
+	const unsigned int m_uiEntityID;
+	static unsigned int m_suEntityIDCount;
 	static std::map<const unsigned int, Entity*> s_xEntityList;
 
 protected:
@@ -27,14 +27,14 @@ public:
 	~Entity();
 
 	virtual void Update(float a_fDeltaTime);
-	virtual void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO);
+	virtual void Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO);
 
 	void AddComponent(Component* a_pComponent) { m_apComponentList.push_back(a_pComponent); }
-	Component* FindComponentOfType(COMPONENT_TYPE eComponentType);
+	Component* FindComponentOfType(COMPONENT_TYPE a_eComponentType);
 
-	void RemoveEntity(Entity* a_entity);
+	void RemoveEntity(Entity* a_pEntity);
 
-	inline const unsigned int GetEntityID() { return m_uEntityID; }
+	inline const unsigned int GetEntityID() { return m_uiEntityID; }
 	inline static const std::map<const unsigned int, Entity*> GetEntityList() { return s_xEntityList; }
 };
 

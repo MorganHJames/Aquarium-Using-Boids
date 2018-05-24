@@ -29,7 +29,7 @@ public:
 
 	Entity* GetOwnerEntity() { return m_pOwnerEntity; }
 	virtual void Update(float a_fDeltaTime);
-	virtual void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO);
+	virtual void Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO);
 
 };
 

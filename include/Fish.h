@@ -14,11 +14,11 @@
 class Fish : public Entity
 {
 public:
-	Fish(glm::vec3 pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName);
+	Fish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_v3Colour, std::string a_sName);
 	~Fish();
 
 	virtual void Update(float a_fDeltaTime);
-	void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO);
+	void Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO);
 };
 
 #endif//_FISH_H

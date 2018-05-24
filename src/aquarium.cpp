@@ -61,15 +61,15 @@ bool aquarium::onCreate()
 	return true;
 }
 
-void aquarium::Update(float a_deltaTime)
+void aquarium::Update(float a_fDeltaTime)
 {
 	// update our camera matrix using the keyboard/mouse
 	if (m_bFreeLook)
-	Utility::freeMovement(m_cameraMatrix, a_deltaTime, 10);
+	Utility::freeMovement(m_cameraMatrix, a_fDeltaTime, 10);
 
 	if (m_bPaused)
 	{
-		a_deltaTime = 0;
+		a_fDeltaTime = 0;
 	}
 
 	// clear all gizmos from last frame
@@ -85,7 +85,7 @@ void aquarium::Update(float a_deltaTime)
 		Entity* pCurrentEntity = *xIter;
 		if (pCurrentEntity)
 		{
-			pCurrentEntity->Update(a_deltaTime);
+			pCurrentEntity->Update(a_fDeltaTime);
 		}
 	}
 
@@ -96,7 +96,7 @@ void aquarium::Update(float a_deltaTime)
 		Entity* pCurrentEntity = *xIter1;
 		if (pCurrentEntity)
 		{
-			pCurrentEntity->Update(a_deltaTime);
+			pCurrentEntity->Update(a_fDeltaTime);
 		}
 	}
 
@@ -405,15 +405,15 @@ void aquarium::Update(float a_deltaTime)
 	ImGui::Begin("General Controls");
 
 	//Pause/Resume
-	if (ImGui::Button(pauseName.c_str()))
+	if (ImGui::Button(m_sPauseName.c_str()))
 	{
-		if (pauseName == "Resume")
+		if (m_sPauseName == "Resume")
 		{
-			pauseName = "Pause";
+			m_sPauseName = "Pause";
 		}
 		else
 		{
-			pauseName = "Resume";
+			m_sPauseName = "Resume";
 		}
 
 		Pause();
@@ -464,21 +464,21 @@ ImGui::Begin("Spawn Fish");
 
 //Name
 ImGui::Text("Name");
-ImGui::InputText("Name", cstrFishNameBuffer, IM_ARRAYSIZE(cstrFishNameBuffer));
-sFishName = cstrFishNameBuffer;
+ImGui::InputText("Name", m_cstrFishNameBuffer, IM_ARRAYSIZE(m_cstrFishNameBuffer));
+m_sFishName = m_cstrFishNameBuffer;
 ImGui::NewLine();
 
 //Position
 ImGui::Text("Position");
 //sliders for x y and z
-ImGui::SliderFloat("x", &v3FishPosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
-ImGui::SliderFloat("y", &v3FishPosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
-ImGui::SliderFloat("z", &v3FishPosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("x", &m_v3FishPosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("y", &m_v3FishPosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("z", &m_v3FishPosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
 ImGui::NewLine();
 
 //Leaderness
 ImGui::Text("Society Status");
-ImGui::SliderInt("leaderness", &iFishLeaderness, 1, 10);
+ImGui::SliderInt("leaderness", &m_iFishLeaderness, 1, 10);
 ImGui::NewLine();
 
 //Color
@@ -488,7 +488,7 @@ ImGui::NewLine();
 
 if (ImGui::Button("Spawn Fish", ImVec2(175,50)))
 {
-	SpawnFish(v3FishPosition, iFishLeaderness, glm::vec4(m_fFishColour[0], m_fFishColour[1], m_fFishColour[2], m_fFishColour[3]), sFishName);
+	SpawnFish(m_v3FishPosition, m_iFishLeaderness, glm::vec4(m_fFishColour[0], m_fFishColour[1], m_fFishColour[2], m_fFishColour[3]), m_sFishName);
 }
 
 ImGui::End();
@@ -501,21 +501,21 @@ ImGui::Begin("Spawn Shark");
 
 //Name
 ImGui::Text("Name");
-ImGui::InputText("Name", cstrSharkNameBuffer, IM_ARRAYSIZE(cstrSharkNameBuffer));
-sSharkName = cstrSharkNameBuffer;
+ImGui::InputText("Name", m_cstrSharkNameBuffer, IM_ARRAYSIZE(m_cstrSharkNameBuffer));
+m_sSharkName = m_cstrSharkNameBuffer;
 ImGui::NewLine();
 
 //Position
 ImGui::Text("Position");
 //sliders for x y and z
-ImGui::SliderFloat("x", &v3SharkPosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
-ImGui::SliderFloat("y", &v3SharkPosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
-ImGui::SliderFloat("z", &v3SharkPosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("x", &m_v3SharkPosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("y", &m_v3SharkPosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("z", &m_v3SharkPosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
 ImGui::NewLine();
 
 //Leaderness
 ImGui::Text("Society Status");
-ImGui::SliderInt("leaderness", &iSharkLeaderness, 1, 10);
+ImGui::SliderInt("leaderness", &m_iSharkLeaderness, 1, 10);
 ImGui::NewLine();
 
 //Color
@@ -525,7 +525,7 @@ ImGui::NewLine();
 
 if (ImGui::Button("Spawn Shark", ImVec2(175, 50)))
 {
-	SpawnShark(v3SharkPosition, iSharkLeaderness, glm::vec4(m_fSharkColour[0], m_fSharkColour[1], m_fSharkColour[2], m_fSharkColour[3]), sSharkName);
+	SpawnShark(m_v3SharkPosition, m_iSharkLeaderness, glm::vec4(m_fSharkColour[0], m_fSharkColour[1], m_fSharkColour[2], m_fSharkColour[3]), m_sSharkName);
 }
 
 ImGui::End();
@@ -538,21 +538,21 @@ ImGui::Begin("Spawn Obstacle");
 
 //Name
 ImGui::Text("Name");
-ImGui::InputText("Name", cstrObstacleNameBuffer, IM_ARRAYSIZE(cstrObstacleNameBuffer));
-sObstacleName = cstrObstacleNameBuffer;
+ImGui::InputText("Name", m_cstrObstacleNameBuffer, IM_ARRAYSIZE(m_cstrObstacleNameBuffer));
+m_sObstacleName = m_cstrObstacleNameBuffer;
 ImGui::NewLine();
 
 //Position
 ImGui::Text("Position");
 //sliders for x y and z
-ImGui::SliderFloat("x", &v3ObstaclePosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
-ImGui::SliderFloat("y", &v3ObstaclePosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
-ImGui::SliderFloat("z", &v3ObstaclePosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("x", &m_v3ObstaclePosition.x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("y", &m_v3ObstaclePosition.y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+ImGui::SliderFloat("z", &m_v3ObstaclePosition.z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
 ImGui::NewLine();
 
 //Size
 ImGui::Text("Size");
-ImGui::SliderFloat("Radius", &iObstacleRadius, 0.01f, 100.0f);
+ImGui::SliderFloat("Radius", &m_iObstacleRadius, 0.01f, 100.0f);
 ImGui::NewLine();
 
 //Color
@@ -562,7 +562,7 @@ ImGui::NewLine();
 
 if (ImGui::Button("Spawn Obstacle", ImVec2(175, 50)))
 {
-	SpawnObstacle(v3ObstaclePosition, iObstacleRadius, glm::vec4(m_fObstacleColour[0], m_fObstacleColour[1], m_fObstacleColour[2], m_fObstacleColour[3]), sObstacleName);
+	SpawnObstacle(m_v3ObstaclePosition, m_iObstacleRadius, glm::vec4(m_fObstacleColour[0], m_fObstacleColour[1], m_fObstacleColour[2], m_fObstacleColour[3]), m_sObstacleName);
 }
 
 ImGui::End();
@@ -576,9 +576,9 @@ ImGui::Begin("Fish Traits");
 
 if (ImGui::Button("De-select"))
 {
-	pSelectedSharkEntity = nullptr;
-	pSelectedObstacleEntity = nullptr;
-	pSelectedFishEntity = nullptr;
+	m_pSelectedSharkEntity = nullptr;
+	m_pSelectedObstacleEntity = nullptr;
+	m_pSelectedFishEntity = nullptr;
 }
 
 std::vector< Fish* >::iterator xIter4;
@@ -591,18 +591,18 @@ for (xIter4 = m_axFishArray.begin(); xIter4 < m_axFishArray.end(); ++xIter4)
 
 		if (ImGui::Button(pCurrentTransform->m_sName.c_str()))
 		{
-			pSelectedSharkEntity = nullptr;
-			pSelectedObstacleEntity = nullptr;
-			pSelectedFishEntity = pCurrentEntity;
+			m_pSelectedSharkEntity = nullptr;
+			m_pSelectedObstacleEntity = nullptr;
+			m_pSelectedFishEntity = pCurrentEntity;
 		}
 	}
 }
 
-if (pSelectedFishEntity != nullptr)
+if (m_pSelectedFishEntity != nullptr)
 {
-	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pSelectedFishEntity->FindComponentOfType(TRANSFORM));
-	BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pSelectedFishEntity->FindComponentOfType(BRAIN));
-	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(pSelectedFishEntity->FindComponentOfType(MODEL));
+	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(m_pSelectedFishEntity->FindComponentOfType(TRANSFORM));
+	BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(m_pSelectedFishEntity->FindComponentOfType(BRAIN));
+	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(m_pSelectedFishEntity->FindComponentOfType(MODEL));
 
 	//Follow
 	m_bFreeLook = false;
@@ -633,12 +633,12 @@ if (pSelectedFishEntity != nullptr)
 
 	//Color	
 	ImGui::Text("Color");
-	m_fSelectedFishColour[0] = pCurrentModel->m_colour.x;
-	m_fSelectedFishColour[1] = pCurrentModel->m_colour.y;
-	m_fSelectedFishColour[2] = pCurrentModel->m_colour.z;
-	m_fSelectedFishColour[3] = pCurrentModel->m_colour.w;
+	m_fSelectedFishColour[0] = pCurrentModel->m_v4Colour.x;
+	m_fSelectedFishColour[1] = pCurrentModel->m_v4Colour.y;
+	m_fSelectedFishColour[2] = pCurrentModel->m_v4Colour.z;
+	m_fSelectedFishColour[3] = pCurrentModel->m_v4Colour.w;
 	ImGui::ColorPicker4("Color", m_fSelectedFishColour);
-	pCurrentModel->m_colour = glm::vec4(m_fSelectedFishColour[0], m_fSelectedFishColour[1], m_fSelectedFishColour[2], m_fSelectedFishColour[3]);
+	pCurrentModel->m_v4Colour = glm::vec4(m_fSelectedFishColour[0], m_fSelectedFishColour[1], m_fSelectedFishColour[2], m_fSelectedFishColour[3]);
 	
 	ImGui::NewLine();
 }
@@ -658,9 +658,9 @@ ImGui::Begin("Shark Traits");
 
 if (ImGui::Button("De-select"))
 {
-	pSelectedSharkEntity = nullptr;
-	pSelectedObstacleEntity = nullptr;
-	pSelectedSharkEntity = nullptr;
+	m_pSelectedSharkEntity = nullptr;
+	m_pSelectedObstacleEntity = nullptr;
+	m_pSelectedSharkEntity = nullptr;
 }
 	
 std::vector< Shark* >::iterator xIter5;
@@ -673,18 +673,18 @@ for (xIter5 = m_axSharkArray.begin(); xIter5 < m_axSharkArray.end(); ++xIter5)
 
 		if (ImGui::Button(pCurrentTransform->m_sName.c_str()))
 		{
-			pSelectedSharkEntity = nullptr;
-			pSelectedObstacleEntity = nullptr;
-			pSelectedSharkEntity = pCurrentEntity;
+			m_pSelectedSharkEntity = nullptr;
+			m_pSelectedObstacleEntity = nullptr;
+			m_pSelectedSharkEntity = pCurrentEntity;
 		}
 	}
 }
 
-if (pSelectedSharkEntity != nullptr)
+if (m_pSelectedSharkEntity != nullptr)
 {
-	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pSelectedSharkEntity->FindComponentOfType(TRANSFORM));
-	BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pSelectedSharkEntity->FindComponentOfType(BRAIN));
-	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(pSelectedSharkEntity->FindComponentOfType(MODEL));
+	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(m_pSelectedSharkEntity->FindComponentOfType(TRANSFORM));
+	BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(m_pSelectedSharkEntity->FindComponentOfType(BRAIN));
+	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(m_pSelectedSharkEntity->FindComponentOfType(MODEL));
 	
 	//Follow
 	m_bFreeLook = false;
@@ -715,12 +715,12 @@ if (pSelectedSharkEntity != nullptr)
 
 	//Color	
 	ImGui::Text("Color");
-	m_fSelectedSharkColour[0] = pCurrentModel->m_colour.x;
-	m_fSelectedSharkColour[1] = pCurrentModel->m_colour.y;
-	m_fSelectedSharkColour[2] = pCurrentModel->m_colour.z;
-	m_fSelectedSharkColour[3] = pCurrentModel->m_colour.w;
+	m_fSelectedSharkColour[0] = pCurrentModel->m_v4Colour.x;
+	m_fSelectedSharkColour[1] = pCurrentModel->m_v4Colour.y;
+	m_fSelectedSharkColour[2] = pCurrentModel->m_v4Colour.z;
+	m_fSelectedSharkColour[3] = pCurrentModel->m_v4Colour.w;
 	ImGui::ColorPicker4("Color", m_fSelectedSharkColour);
-	pCurrentModel->m_colour = glm::vec4(m_fSelectedSharkColour[0], m_fSelectedSharkColour[1], m_fSelectedSharkColour[2], m_fSelectedSharkColour[3]);
+	pCurrentModel->m_v4Colour = glm::vec4(m_fSelectedSharkColour[0], m_fSelectedSharkColour[1], m_fSelectedSharkColour[2], m_fSelectedSharkColour[3]);
 
 	ImGui::NewLine();
 }
@@ -740,9 +740,9 @@ ImGui::Begin("Obstacle Traits");
 
 if (ImGui::Button("De-select"))
 {
-	pSelectedObstacleEntity = nullptr;
-	pSelectedObstacleEntity = nullptr;
-	pSelectedObstacleEntity = nullptr;
+	m_pSelectedObstacleEntity = nullptr;
+	m_pSelectedObstacleEntity = nullptr;
+	m_pSelectedObstacleEntity = nullptr;
 }
 
 std::vector< Obstacle* >::iterator xIter6;
@@ -755,17 +755,17 @@ for (xIter6 = m_axObstacleArray.begin(); xIter6 < m_axObstacleArray.end(); ++xIt
 
 		if (ImGui::Button(pCurrentTransform->m_sName.c_str()))
 		{
-			pSelectedObstacleEntity = nullptr;
-			pSelectedObstacleEntity = nullptr;
-			pSelectedObstacleEntity = pCurrentEntity;
+			m_pSelectedObstacleEntity = nullptr;
+			m_pSelectedObstacleEntity = nullptr;
+			m_pSelectedObstacleEntity = pCurrentEntity;
 		}
 	}
 }
 
-if (pSelectedObstacleEntity != nullptr)
+if (m_pSelectedObstacleEntity != nullptr)
 {
-	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pSelectedObstacleEntity->FindComponentOfType(TRANSFORM));
-	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(pSelectedObstacleEntity->FindComponentOfType(MODEL));
+	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(m_pSelectedObstacleEntity->FindComponentOfType(TRANSFORM));
+	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(m_pSelectedObstacleEntity->FindComponentOfType(MODEL));
 
 	//Follow
 	m_bFreeLook = false;
@@ -796,12 +796,12 @@ if (pSelectedObstacleEntity != nullptr)
 
 	//Color	
 	ImGui::Text("Color");
-	m_fSelectedObstacleColour[0] = pCurrentModel->m_colour.x;
-	m_fSelectedObstacleColour[1] = pCurrentModel->m_colour.y;
-	m_fSelectedObstacleColour[2] = pCurrentModel->m_colour.z;
-	m_fSelectedObstacleColour[3] = pCurrentModel->m_colour.w;
+	m_fSelectedObstacleColour[0] = pCurrentModel->m_v4Colour.x;
+	m_fSelectedObstacleColour[1] = pCurrentModel->m_v4Colour.y;
+	m_fSelectedObstacleColour[2] = pCurrentModel->m_v4Colour.z;
+	m_fSelectedObstacleColour[3] = pCurrentModel->m_v4Colour.w;
 	ImGui::ColorPicker4("Color", m_fSelectedObstacleColour);
-	pCurrentModel->m_colour = glm::vec4(m_fSelectedObstacleColour[0], m_fSelectedObstacleColour[1], m_fSelectedObstacleColour[2], m_fSelectedObstacleColour[3]);
+	pCurrentModel->m_v4Colour = glm::vec4(m_fSelectedObstacleColour[0], m_fSelectedObstacleColour[1], m_fSelectedObstacleColour[2], m_fSelectedObstacleColour[3]);
 
 	ImGui::NewLine();
 }
@@ -895,9 +895,9 @@ void aquarium::ResetEntities()
 	SetupEntities();
 }
 
-void aquarium::SpawnFish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName)
+void aquarium::SpawnFish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_v4Colour, std::string a_sName)
 {
-	Fish* fish = new Fish(a_v3Pos, a_iLeaderness, a_colour, a_sName);
+	Fish* fish = new Fish(a_v3Pos, a_iLeaderness, a_v4Colour, a_sName);
 	m_axFishArray.push_back(fish);
 }
 
@@ -911,12 +911,12 @@ void aquarium::DestroyAllFish()
 	}
 	m_axFishArray.clear();
 
-	pSelectedFishEntity = nullptr;
+	m_pSelectedFishEntity = nullptr;
 }
 
-void aquarium::SpawnShark(glm::vec3 pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName)
+void aquarium::SpawnShark(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_v4Colour, std::string a_sName)
 {
-	Shark* shark = new Shark(pos, a_iLeaderness, a_colour, a_sName);
+	Shark* shark = new Shark(a_v3Pos, a_iLeaderness, a_v4Colour, a_sName);
 	m_axSharkArray.push_back(shark);
 }
 
@@ -931,12 +931,12 @@ void aquarium::DestroyAllSharks()
 
 	m_axSharkArray.clear();
 
-	pSelectedSharkEntity = nullptr;
+	m_pSelectedSharkEntity = nullptr;
 }
 
-void aquarium::SpawnObstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName)
+void aquarium::SpawnObstacle(glm::vec3 a_v3Pos, float a_fRadius, glm::vec4 a_v4Colour, std::string a_sName)
 {
-	Obstacle* obstacle = new Obstacle(a_pos, a_radius, a_colour, a_sName);
+	Obstacle* obstacle = new Obstacle(a_v3Pos, a_fRadius, a_v4Colour, a_sName);
 	m_axObstacleArray.push_back(obstacle);
 }
 
@@ -949,7 +949,7 @@ void aquarium::DestroyAllObstacles()
 		pCurrentEntity->RemoveEntity(pCurrentEntity);
 	}
 	m_axObstacleArray.clear();
-	pSelectedObstacleEntity = nullptr;
+	m_pSelectedObstacleEntity = nullptr;
 }
 
 void aquarium::DestroyAllEntities()
@@ -957,9 +957,9 @@ void aquarium::DestroyAllEntities()
 	DestroyAllFish();
 	DestroyAllSharks();
 	DestroyAllObstacles();
-	pSelectedSharkEntity = nullptr;
-	pSelectedObstacleEntity = nullptr;
-	pSelectedFishEntity = nullptr;
+	m_pSelectedSharkEntity = nullptr;
+	m_pSelectedObstacleEntity = nullptr;
+	m_pSelectedFishEntity = nullptr;
 }
 
 void aquarium::Destroy()

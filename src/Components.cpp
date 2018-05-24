@@ -21,7 +21,7 @@ void Component::Update(float a_fDeltaTime)
 
 }
 
-void Component::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
+void Component::Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO)
 {
 
 }
