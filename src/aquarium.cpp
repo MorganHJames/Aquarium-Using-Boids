@@ -1,6 +1,8 @@
 #include "aquarium.h"
 #include "Constants.h"
 #include "BrainComponent.h"
+#include "TransformComponent.h"
+#include "ModelComponent.h"
 // Core includes
 #include <iostream>
 #include <time.h>
@@ -23,11 +25,9 @@
 #define DEFAULT_SCREENWIDTH 1280
 #define DEFAULT_SCREENHEIGHT 720
 
-
 aquarium::aquarium()
 {
 }
-
 
 aquarium::~aquarium()
 {
@@ -58,6 +58,7 @@ bool aquarium::onCreate()
 void aquarium::Update(float a_deltaTime)
 {
 	// update our camera matrix using the keyboard/mouse
+	if (m_bFreeLook)
 	Utility::freeMovement(m_cameraMatrix, a_deltaTime, 10);
 
 	if (m_bPaused)
@@ -562,6 +563,251 @@ ImGui::End();
 
 #pragma endregion
 
+#pragma region Fish Traits
+
+//Fish Traits
+ImGui::Begin("Fish Traits");
+
+if (ImGui::Button("De-select"))
+{
+	pSelectedSharkEntity = nullptr;
+	pSelectedObstacleEntity = nullptr;
+	pSelectedFishEntity = nullptr;
+}
+
+std::vector< Fish* >::iterator xIter4;
+for (xIter4 = m_axFishArray.begin(); xIter4 < m_axFishArray.end(); ++xIter4)
+{
+	Entity* pCurrentEntity = *xIter4;
+	if (pCurrentEntity)
+	{
+		TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pCurrentEntity->FindComponentOfType(TRANSFORM));
+
+		if (ImGui::Button(pCurrentTransform->m_sName.c_str()))
+		{
+			pSelectedSharkEntity = nullptr;
+			pSelectedObstacleEntity = nullptr;
+			pSelectedFishEntity = pCurrentEntity;
+		}
+	}
+}
+
+if (pSelectedFishEntity != nullptr)
+{
+	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pSelectedFishEntity->FindComponentOfType(TRANSFORM));
+	BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pSelectedFishEntity->FindComponentOfType(BRAIN));
+	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(pSelectedFishEntity->FindComponentOfType(MODEL));
+
+	//Follow
+	m_bFreeLook = false;
+	m_cameraMatrix = glm::inverse(glm::lookAt(glm::vec3(50, 50, 50), pCurrentTransform->GetCurrentPosition(), glm::vec3(0, 1, 0)));
+
+	//Name
+	ImGui::Text("Name");
+	char *cstrSelectedFishNameBuffer = &pCurrentTransform->m_sName[0u];
+	ImGui::InputText("Name", cstrSelectedFishNameBuffer, IM_ARRAYSIZE(cstrSelectedFishNameBuffer));
+	ImGui::NewLine();
+
+	//Position
+	ImGui::Text("Position");
+	//sliders for x y and z
+	float x = pCurrentTransform->GetCurrentPosition().x;
+	float y = pCurrentTransform->GetCurrentPosition().y;
+	float z = pCurrentTransform->GetCurrentPosition().z;
+	ImGui::SliderFloat("x", &x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	ImGui::SliderFloat("y", &y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	ImGui::SliderFloat("z", &z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	pCurrentTransform->SetCurrentPosition(glm::vec3(x, y, z));
+	ImGui::NewLine();
+
+	//Leaderness
+	ImGui::Text("Society Status");
+	ImGui::SliderInt("leaderness", &pCurrentBrain->m_iLEADERNESS, 1, 10);
+	ImGui::NewLine();
+
+	//Color	
+	ImGui::Text("Color");
+	m_fSelectedFishColour[0] = pCurrentModel->m_colour.x;
+	m_fSelectedFishColour[1] = pCurrentModel->m_colour.y;
+	m_fSelectedFishColour[2] = pCurrentModel->m_colour.z;
+	m_fSelectedFishColour[3] = pCurrentModel->m_colour.w;
+	ImGui::ColorPicker4("Color", m_fSelectedFishColour);
+	pCurrentModel->m_colour = glm::vec4(m_fSelectedFishColour[0], m_fSelectedFishColour[1], m_fSelectedFishColour[2], m_fSelectedFishColour[3]);
+	
+	ImGui::NewLine();
+}
+else
+{
+	m_bFreeLook = true;
+}
+
+ImGui::End();
+
+#pragma endregion
+
+#pragma region Shark Traits
+
+//Shark Traits
+ImGui::Begin("Shark Traits");
+
+if (ImGui::Button("De-select"))
+{
+	pSelectedSharkEntity = nullptr;
+	pSelectedObstacleEntity = nullptr;
+	pSelectedSharkEntity = nullptr;
+}
+	
+std::vector< Shark* >::iterator xIter5;
+for (xIter5 = m_axSharkArray.begin(); xIter5 < m_axSharkArray.end(); ++xIter5)
+{
+	Entity* pCurrentEntity = *xIter5;
+	if (pCurrentEntity)
+	{
+		TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pCurrentEntity->FindComponentOfType(TRANSFORM));
+
+		if (ImGui::Button(pCurrentTransform->m_sName.c_str()))
+		{
+			pSelectedSharkEntity = nullptr;
+			pSelectedObstacleEntity = nullptr;
+			pSelectedSharkEntity = pCurrentEntity;
+		}
+	}
+}
+
+if (pSelectedSharkEntity != nullptr)
+{
+	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pSelectedSharkEntity->FindComponentOfType(TRANSFORM));
+	BrainComponent* pCurrentBrain = static_cast<BrainComponent*>(pSelectedSharkEntity->FindComponentOfType(BRAIN));
+	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(pSelectedSharkEntity->FindComponentOfType(MODEL));
+	
+	//Follow
+	m_bFreeLook = false;
+	m_cameraMatrix = glm::inverse(glm::lookAt(glm::vec3(50, 50, 50), pCurrentTransform->GetCurrentPosition(), glm::vec3(0, 1, 0)));
+
+	//Name
+	ImGui::Text("Name");
+	char *cstrSelectedSharkNameBuffer = &pCurrentTransform->m_sName[0u];
+	ImGui::InputText("Name", cstrSelectedSharkNameBuffer, IM_ARRAYSIZE(cstrSelectedSharkNameBuffer));
+	ImGui::NewLine();
+
+	//Position
+	ImGui::Text("Position");
+	//sliders for x y and z
+	float x = pCurrentTransform->GetCurrentPosition().x;
+	float y = pCurrentTransform->GetCurrentPosition().y;
+	float z = pCurrentTransform->GetCurrentPosition().z;
+	ImGui::SliderFloat("x", &x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	ImGui::SliderFloat("y", &y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	ImGui::SliderFloat("z", &z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	pCurrentTransform->SetCurrentPosition(glm::vec3(x, y, z));
+	ImGui::NewLine();
+
+	//Leaderness
+	ImGui::Text("Society Status");
+	ImGui::SliderInt("leaderness", &pCurrentBrain->m_iLEADERNESS, 1, 10);
+	ImGui::NewLine();
+
+	//Color	
+	ImGui::Text("Color");
+	m_fSelectedSharkColour[0] = pCurrentModel->m_colour.x;
+	m_fSelectedSharkColour[1] = pCurrentModel->m_colour.y;
+	m_fSelectedSharkColour[2] = pCurrentModel->m_colour.z;
+	m_fSelectedSharkColour[3] = pCurrentModel->m_colour.w;
+	ImGui::ColorPicker4("Color", m_fSelectedSharkColour);
+	pCurrentModel->m_colour = glm::vec4(m_fSelectedSharkColour[0], m_fSelectedSharkColour[1], m_fSelectedSharkColour[2], m_fSelectedSharkColour[3]);
+
+	ImGui::NewLine();
+}
+else
+{
+	m_bFreeLook = true;
+}
+
+ImGui::End();
+
+#pragma endregion
+
+#pragma region Obstacle Traits
+
+//Obstacle Traits
+ImGui::Begin("Obstacle Traits");
+
+if (ImGui::Button("De-select"))
+{
+	pSelectedObstacleEntity = nullptr;
+	pSelectedObstacleEntity = nullptr;
+	pSelectedObstacleEntity = nullptr;
+}
+
+std::vector< Obstacle* >::iterator xIter6;
+for (xIter6 = m_axObstacleArray.begin(); xIter6 < m_axObstacleArray.end(); ++xIter6)
+{
+	Entity* pCurrentEntity = *xIter6;
+	if (pCurrentEntity)
+	{
+		TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pCurrentEntity->FindComponentOfType(TRANSFORM));
+
+		if (ImGui::Button(pCurrentTransform->m_sName.c_str()))
+		{
+			pSelectedObstacleEntity = nullptr;
+			pSelectedObstacleEntity = nullptr;
+			pSelectedObstacleEntity = pCurrentEntity;
+		}
+	}
+}
+
+if (pSelectedObstacleEntity != nullptr)
+{
+	TransformComponent* pCurrentTransform = static_cast<TransformComponent*>(pSelectedObstacleEntity->FindComponentOfType(TRANSFORM));
+	ModelComponent* pCurrentModel = static_cast<ModelComponent*>(pSelectedObstacleEntity->FindComponentOfType(MODEL));
+
+	//Follow
+	m_bFreeLook = false;
+	m_cameraMatrix = glm::inverse(glm::lookAt(glm::vec3(50, 50, 50), pCurrentTransform->GetCurrentPosition(), glm::vec3(0, 1, 0)));
+
+	//Name
+	ImGui::Text("Name");
+	char *cstrSelectedObstacleNameBuffer = &pCurrentTransform->m_sName[0u];
+	ImGui::InputText("Name", cstrSelectedObstacleNameBuffer, IM_ARRAYSIZE(cstrSelectedObstacleNameBuffer));
+	ImGui::NewLine();
+
+	//Position
+	ImGui::Text("Position");
+	//sliders for x y and z
+	float x = pCurrentTransform->GetCurrentPosition().x;
+	float y = pCurrentTransform->GetCurrentPosition().y;
+	float z = pCurrentTransform->GetCurrentPosition().z;
+	ImGui::SliderFloat("x", &x, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	ImGui::SliderFloat("y", &y, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	ImGui::SliderFloat("z", &z, -g_fAQUARIUM_SIZE + 10, g_fAQUARIUM_SIZE - 10);
+	pCurrentTransform->SetCurrentPosition(glm::vec3(x, y, z));
+	ImGui::NewLine();
+
+	//Size
+	ImGui::Text("Size");
+	ImGui::SliderFloat("Radius", &pCurrentModel->m_fRadius, 0.01f, 100.0f);
+	ImGui::NewLine();
+
+	//Color	
+	ImGui::Text("Color");
+	m_fSelectedObstacleColour[0] = pCurrentModel->m_colour.x;
+	m_fSelectedObstacleColour[1] = pCurrentModel->m_colour.y;
+	m_fSelectedObstacleColour[2] = pCurrentModel->m_colour.z;
+	m_fSelectedObstacleColour[3] = pCurrentModel->m_colour.w;
+	ImGui::ColorPicker4("Color", m_fSelectedObstacleColour);
+	pCurrentModel->m_colour = glm::vec4(m_fSelectedObstacleColour[0], m_fSelectedObstacleColour[1], m_fSelectedObstacleColour[2], m_fSelectedObstacleColour[3]);
+
+	ImGui::NewLine();
+}
+else
+{
+	m_bFreeLook = true;
+}
+
+ImGui::End();
+
+#pragma endregion
+
 #pragma endregion
 
 	// quit our application when escape is pressed
@@ -617,24 +863,24 @@ void aquarium::Draw()
 void aquarium::SetupEntities()
 {
 	//Create Fish.
-	SpawnFish(glm::vec3(0, 0, 0), 1, glm::vec4(1, 1, 0, 1), "Fish 1");
-	SpawnFish(glm::vec3(0, 0, 2), 1, glm::vec4(1, 1, 0, 1), "Fish 2");
-	SpawnFish(glm::vec3(0, 0, 4), 1, glm::vec4(1, 1, 0, 1), "Fish 3");
-	SpawnFish(glm::vec3(0, 0, 6), 1, glm::vec4(1, 1, 0, 1), "Fish 4");
+	SpawnFish(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)), glm::linearRand(1, 3), glm::vec4(1, 1, 0, 1), "Fish 1");
+	SpawnFish(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)), glm::linearRand(1, 3), glm::vec4(1, 1, 0, 1), "Fish 2");
+	SpawnFish(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)), glm::linearRand(1, 3), glm::vec4(1, 1, 0, 1), "Fish 3");
+	SpawnFish(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)), glm::linearRand(1, 3), glm::vec4(1, 1, 0, 1), "Fish 4");
 
 	//create Sharks.
-	SpawnShark(glm::vec3(0, 2, 0), 2, glm::vec4(0, 0, 1, 1), "Shark 1");
-	SpawnShark(glm::vec3(0, 4, 1), 2, glm::vec4(0, 0, 1, 1), "Shark 2");
-	SpawnShark(glm::vec3(0, 6, 2), 2, glm::vec4(0, 0, 1, 1), "Shark 3");
-	SpawnShark(glm::vec3(0, 8, 3), 2, glm::vec4(1, 0, 0, 1), "Shark 4");
+	SpawnShark(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)), glm::linearRand(2, 4), glm::vec4(0, 0, 1, 1), "Shark 1");
+	SpawnShark(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)), glm::linearRand(2, 4), glm::vec4(0, 0, 1, 1), "Shark 2");
+	SpawnShark(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)), glm::linearRand(2, 4), glm::vec4(0, 0, 1, 1), "Shark 3");
+	SpawnShark(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)), glm::linearRand(2, 4), glm::vec4(0, 0, 1, 1), "Shark 4");
 
 	//Create Obstacles.
-	SpawnObstacle(glm::vec3(0, 0, 50), 15, glm::vec4(1, 0, 0, 1), "Obstacle 1");
-	SpawnObstacle(glm::vec3(0, 50, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 2");
-	SpawnObstacle(glm::vec3(0, 0, -50), 15, glm::vec4(1, 0, 0, 1), "Obstacle 3");
-	SpawnObstacle(glm::vec3(0, -50, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 4");
-	SpawnObstacle(glm::vec3(50, 0, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 5");
-	SpawnObstacle(glm::vec3(-50, 0, 0), 15, glm::vec4(1, 0, 0, 1), "Obstacle 6");
+	SpawnObstacle(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE),  glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)),(float)glm::linearRand(1, 25), glm::vec4(1, 0, 0, 1), "Obstacle 1");
+	SpawnObstacle(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE),  glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)),(float)glm::linearRand(1, 25), glm::vec4(1, 0, 0, 1), "Obstacle 2");
+	SpawnObstacle(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE),  glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)),(float)glm::linearRand(1, 25), glm::vec4(1, 0, 0, 1), "Obstacle 3");
+	SpawnObstacle(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE),  glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)),(float)glm::linearRand(1, 25), glm::vec4(1, 0, 0, 1), "Obstacle 4");
+	SpawnObstacle(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE),  glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)),(float)glm::linearRand(1, 25), glm::vec4(1, 0, 0, 1), "Obstacle 5");
+	SpawnObstacle(glm::vec3(glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE),glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE), glm::linearRand(-g_fAQUARIUM_SIZE, g_fAQUARIUM_SIZE)),  (float)glm::linearRand(1, 25), glm::vec4(1, 0, 0, 1), "Obstacle 6");
 }
 
 void aquarium::ResetEntities()
@@ -649,21 +895,6 @@ void aquarium::SpawnFish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_colou
 	m_axFishArray.push_back(fish);
 }
 
-void aquarium::DestroyFish(Fish* a_fish)
-{
-	std::vector< Fish* >::iterator xIter;
-	for (xIter = m_axFishArray.begin(); xIter < m_axFishArray.end(); ++xIter)
-	{
-		if (*xIter == a_fish)
-		{
-			m_axFishArray.erase(xIter);
-
-			Entity* pCurrentEntity = *xIter;
-			pCurrentEntity->RemoveEntity(pCurrentEntity);
-		}
-	}
-}
-
 void aquarium::DestroyAllFish()
 {
 	std::vector< Fish* >::iterator xIter;
@@ -673,27 +904,14 @@ void aquarium::DestroyAllFish()
 		pCurrentEntity->RemoveEntity(pCurrentEntity);
 	}
 	m_axFishArray.clear();
+
+	pSelectedFishEntity = nullptr;
 }
 
 void aquarium::SpawnShark(glm::vec3 pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName)
 {
 	Shark* shark = new Shark(pos, a_iLeaderness, a_colour, a_sName);
 	m_axSharkArray.push_back(shark);
-}
-
-void aquarium::DestroyShark(Shark* a_shark)
-{
-	std::vector< Shark* >::iterator xIter;
-	for (xIter = m_axSharkArray.begin(); xIter < m_axSharkArray.end(); ++xIter)
-	{
-		if (*xIter == a_shark)
-		{
-			m_axSharkArray.erase(xIter);
-
-			Entity* pCurrentEntity = *xIter;
-			pCurrentEntity->RemoveEntity(pCurrentEntity);
-		}
-	}
 }
 
 void aquarium::DestroyAllSharks()
@@ -706,27 +924,14 @@ void aquarium::DestroyAllSharks()
 	}
 
 	m_axSharkArray.clear();
+
+	pSelectedSharkEntity = nullptr;
 }
 
 void aquarium::SpawnObstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName)
 {
 	Obstacle* obstacle = new Obstacle(a_pos, a_radius, a_colour, a_sName);
 	m_axObstacleArray.push_back(obstacle);
-}
-
-void aquarium::DestroyObstacle(Obstacle* a_obstacle)
-{
-	std::vector< Obstacle* >::iterator xIter;
-	for (xIter = m_axObstacleArray.begin(); xIter < m_axObstacleArray.end(); ++xIter)
-	{
-		if (*xIter == a_obstacle)
-		{
-			m_axObstacleArray.erase(xIter);
-
-			Entity* pCurrentEntity = *xIter;
-			pCurrentEntity->RemoveEntity(pCurrentEntity);
-		}
-	}
 }
 
 void aquarium::DestroyAllObstacles()
@@ -738,6 +943,7 @@ void aquarium::DestroyAllObstacles()
 		pCurrentEntity->RemoveEntity(pCurrentEntity);
 	}
 	m_axObstacleArray.clear();
+	pSelectedObstacleEntity = nullptr;
 }
 
 void aquarium::DestroyAllEntities()
@@ -745,6 +951,9 @@ void aquarium::DestroyAllEntities()
 	DestroyAllFish();
 	DestroyAllSharks();
 	DestroyAllObstacles();
+	pSelectedSharkEntity = nullptr;
+	pSelectedObstacleEntity = nullptr;
+	pSelectedFishEntity = nullptr;
 }
 
 void aquarium::Destroy()

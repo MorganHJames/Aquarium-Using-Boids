@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: aquarium.h
+//\ Author: Morgan James
+//\ Brief: Holds the "Game loop" contains all the entities and calls upon their functions.
+//\===========================================================================================
+
 #ifndef __AQUARIUM_H_
 #define __AQUARIUM_H_
 
@@ -7,6 +13,7 @@
 #include <vector>
 
 // Forward Declarations
+class Entity;
 class Fish;
 class Shark;
 class Obstacle;
@@ -111,21 +118,27 @@ private:
 	float m_fSharkCollisionAvoidanceForce = 10.0f;
 	float m_fSharkContainmentForce = 100.0f;
 
+	Entity* pSelectedFishEntity = nullptr;
+	Entity* pSelectedSharkEntity = nullptr;
+	Entity* pSelectedObstacleEntity = nullptr;
+	bool m_bFreeLook = true;
+
+	float m_fSelectedFishColour[4];
+	float m_fSelectedSharkColour[4];
+	float m_fSelectedObstacleColour[4];
+
 	void Pause();
 
 	void SetupEntities();
 	void ResetEntities();
 
 	void SpawnFish(glm::vec3 a_v3Pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName);
-	void DestroyFish(Fish* a_fish);
 	void DestroyAllFish();
 
 	void SpawnShark(glm::vec3 pos, int a_iLeaderness, glm::vec4 a_colour, std::string a_sName);
-	void DestroyShark(Shark* a_shark);
 	void DestroyAllSharks();
 
 	void SpawnObstacle(glm::vec3 a_pos, float a_radius, glm::vec4 a_colour, std::string a_sName);
-	void DestroyObstacle(Obstacle* a_obstacle);
 	void DestroyAllObstacles();
 
 	void DestroyAllEntities();

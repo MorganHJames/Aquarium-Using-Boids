@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: Entity.h
+//\ Author: Morgan James
+//\ Brief: Contains variables that won't change throughout the simulation.
+//\===========================================================================================
+
 #ifndef _ENTITY_H
 #define _ENTITY_H
 

@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: BrainComponent.h
+//\ Author: Morgan James
+//\ Brief: Contains functions for figuring out what forces should be applied to entites and then doing so.
+//\===========================================================================================
+
 #ifndef _BRAIN_COMPONENT_H
 #define _BRAIN_COMPONENT_H
 
