@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: Fish.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for Fish.h.
+//\===========================================================================================
+
 #include "Fish.h"
 #include "ModelComponent.h"
 #include "TransformComponent.h"

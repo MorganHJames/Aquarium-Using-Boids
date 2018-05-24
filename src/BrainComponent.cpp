@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: BrainComponent.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for BrainComponent.h.
+//\===========================================================================================
+
 #include "BrainComponent.h"
 #include "TransformComponent.h"
 #include "ModelComponent.h"

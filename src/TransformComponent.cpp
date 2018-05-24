@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: TransformCompnent.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for TransformCompnent.h.
+//\===========================================================================================
+
 #include "TransformComponent.h"
 
 typedef Component PARENT;

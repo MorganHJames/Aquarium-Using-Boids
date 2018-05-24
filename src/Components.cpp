@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: Component.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for Component.h.
+//\===========================================================================================
+
 #include "Component.h"
 
 Component::Component(Entity* a_pOwnerEntity)

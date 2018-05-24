@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: Entity.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for Entity.h.
+//\===========================================================================================
+
 #include "Entity.h"
 
 unsigned int Entity::s_uEntityIDCount;

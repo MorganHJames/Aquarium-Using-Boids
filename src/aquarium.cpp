@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: aquarium.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for aquarium.h.
+//\===========================================================================================
+
 #include "aquarium.h"
 #include "Constants.h"
 #include "BrainComponent.h"

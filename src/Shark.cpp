@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: Shark.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for Obstacle.h.
+//\===========================================================================================
+
 #include "Shark.h"
 #include "ModelComponent.h"
 #include "TransformComponent.h"

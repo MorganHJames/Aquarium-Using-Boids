@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: Obstacle.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for Obstacle.h.
+//\===========================================================================================
+
 #include "Obstacle.h"
 #include "ModelComponent.h"
 #include "TransformComponent.h"

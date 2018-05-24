@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: ModelComponent.cpp
+//\ Author: Morgan James
+//\ Brief: Contains the function definitions for ModelComponent.h.
+//\===========================================================================================
+
 #include "ModelComponent.h"
 #include <glm/ext.hpp>
 #include "aquarium.h"

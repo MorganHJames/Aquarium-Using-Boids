@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: Model Component.h
+//\ Author: Morgan James
+//\ Brief: Contains color, model and size information for the entities.
+//\===========================================================================================
+
 #ifndef _MODEL_COMPONENT_H
 #define _MODEL_COMPONENT_H
 

@@ -1,13 +1,13 @@
 //\===========================================================================================
 //\ File: Entity.h
 //\ Author: Morgan James
-//\ Brief: Contains variables that won't change throughout the simulation.
+//\ Brief: The base class for all entities.
 //\===========================================================================================
 
 #ifndef _ENTITY_H
 #define _ENTITY_H
 
-// Includes
+//Includes
 #include <vector>
 #include <map>
 #include "Component.h"
@@ -38,4 +38,4 @@ public:
 	inline static const std::map<const unsigned int, Entity*> GetEntityList() { return s_xEntityList; }
 };
 
-#endif // _ENTITY_H
+#endif//_ENTITY_H

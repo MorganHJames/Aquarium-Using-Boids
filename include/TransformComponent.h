@@ -1,3 +1,9 @@
+//\===========================================================================================
+//\ File: TransformComponent.h
+//\ Author: Morgan James
+//\ Brief: Contains the transform  matrix data along with the entities name.
+//\===========================================================================================
+
 #ifndef _TRANSFORM_COMPONENT_H
 #define _TRANSFORM_COMPONENT_H
 
